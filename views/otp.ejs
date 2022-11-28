@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- bootstrap css -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <!-- google font -->
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" 
+      rel="stylesheet" 
+    />
+    <link 
+      rel="stylesheet" 
+      href="/css/Signup.css" 
+      type="text/css" 
+    />
+    <title>Sign Up</title>
+  </head>
+  <body>
+    <div class="body-div maincolor d-flex flex-column justify-content-center">
+      <div class="mid-div">
+        <div class="signup-div d-flex flex-column align-items-center">
+          <h4 class="order-1">Sign Up</h4>
+        </div>
+        <form action="/signup/otp" id="sign_form" method="post" name="sign_form">
+          <div class="row">
+            <div class="col-md-6 input-control">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Name"
+                aria-label="Name"
+                id="name"
+                name="name"
+                value="<%= data.name %>"
+                
+              />
+              <div id="nameerror" class="error-message"></div>
+            </div>
+            <div class="col-md-6 input-control">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Username"
+                aria-label="Username"
+                id="Username"
+                name="Username"
+                value="<%= data.Username %>"
+                
+              />
+              <div id="usererror" class="error-message"></div>
+            </div>
+            <div class="col-12 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                name="address"
+                placeholder="Address"
+                value="<%= data.address %>"
+                
+              />
+              <div id="addresserror" class="error-message"></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="state"
+                placeholder="State"
+                aria-label="state"
+                name="state"
+                value="<%= data.state %>"
+                
+              />
+              <div id="stateerror" class="error-message"></div>
+            </div>
+            <div class="col-md-6 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="city"
+                placeholder="City"
+                aria-label="city"
+                name="city"
+                value="<%= data.city %>"
+                
+              />
+              <div id="cityerror" class="error-message"></div>
+            </div>
+            <div class="col-12 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="pincode"
+                name="pincode"
+                placeholder="pincode"
+                value="<%= data.pincode %>"
+                
+              />
+              <div id="pinerror" class="error-message"></div>
+            </div>
+            <div class="col-12 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="Email ID"
+                value="<%= data.email %>"
+                
+              />
+              <div id="emailerror" class="error-message"></div>
+            </div>
+            <div class="col-12 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="phone"
+                name="phone"
+                placeholder="Phone number"
+                value="<%= data.phone %>"
+                
+              />
+              <div id="phoneerror" class="error-message"></div>
+            </div>
+            <div class="col-md-6 input-control">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="Password"
+                aria-label="password"
+                name="password"
+                value="<%= data.password %>"
+                
+              />
+              <div id="passworderror" class="error-message"></div>
+            </div>
+            <div class="col-md-6 input-control">
+              <input
+                type="password"
+                class="form-control"
+                id="conPassword"
+                placeholder="Confirm Password"
+                aria-label="conPassword"
+                name="conPassword"
+                value="<%= data.password %>"
+                
+              />
+              <div id="conpassworderror" class="error-message"></div>
+            </div>
+            <div class="col-12 input-control">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" onclick="myFunction()" id="gridCheck" />
+                <label class="form-check-label" for="gridCheck">
+                  Show password
+                </label>
+              </div>
+            </div>
+          </div>
+        <div class="otp-section mt-5" id="otp-section">
+          <hr>
+          <div class="signup-div d-flex flex-column align-items-center mb-3 mt-3">
+            <h5 class="order-1">Please enter the one time password
+                to verify your account.
+                A code has been sent to 
+            </h5>
+        </div>
+          <div class="row">
+              <div class="col-8 offset-2 input-control mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="otp"
+                    name="otp"
+                    placeholder="Enter the OTP"
+                  />
+                  <!-- <div id="otperror" class="error-message"></div> -->
+                </div>
+                <div class="d-flex justify-content-center ">
+                  <button type="submit" class="submit-btn">Submit</button>
+                </div>
+          </div>
+      </form>
+        </div>
+      </div>
+      <p class="align-self-lg-start signed">Already have a account ? <a href="/login">login</a></p>
+    </div>
+    
+    <!-- bootstrap javascript -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
+    <!-- validation javascript -->
+    <script src="/javascript/Signup.js"></script>
+  </body>
+</html>

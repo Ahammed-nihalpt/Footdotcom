@@ -1,0 +1,99 @@
+/* *{
+    padding: 0px;
+    margin: 0px;
+} */
+
+body{
+    background-color: #003049;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.body-div {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.mid-div{
+    background-color: #d9d9d9;
+    border: 1px;
+    border-radius: 10px;
+    padding: 30px !important;
+}
+
+.input-control input{
+    /* width: 100% !important; */
+    margin-bottom: 20px;
+    padding: 5px !important;
+}
+
+.login-div::after  {
+    content: '';
+    position: relative;
+    min-width: 300px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    order: 2;
+    border-bottom: 1px solid rgb(29, 26, 26);
+    opacity: 0.2;
+}
+
+.signup{
+    color: #ffff;
+}
+
+.signup a{
+    color: #ffff;
+}
+
+.login-btn{
+    background-color: #1f3946;
+    padding: 5px;
+    color: #ffff;
+    border: none;
+    border-radius: 5px;
+    width: 170px;
+    outline: none;
+}
+  
+.login-btn:hover{
+    background-color: #003049;
+    color: #ffff;
+}
+
+.error-message-username{
+    position: absolute;
+    height: 59px;
+    color: #f20a0a;
+    font-size: 9px;
+    margin-top: -2px;
+    margin-left: 7px;
+}
+
+.error-message{
+    position: absolute;
+    height: 59px;
+    color: #f20a0a;
+    font-size: 9px;
+    margin-top: -2px;
+    margin-left: 7px;
+}
+
+.success input{
+    border-color: #09c372;
+}
+  
+.error input{
+    border-color: #f20a0a;
+}
+
+.al-mod{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    transition: 1s;
+}
