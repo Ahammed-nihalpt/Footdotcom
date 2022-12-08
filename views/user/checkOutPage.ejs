@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/cart.css" type="text/css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+  </head>
+  <body class="blue">
+    <!-- <%- include('../partials/userPartials/homeHeader.ejs') %> -->
+    <section class="mt-5">
+      <div class="container">
+        <!-- <div class="d-flex"> -->
+          <form action="/order-confirmed" method="post">
+            <div class="row">
+              <div class="order col-md-6 mt-3">
+                <h5 class="white">Order Details:</h5>
+                <div
+                  style="border: 1px solid; width: 100%;"
+                  class="p-4 d9"
+                >
+                <h6>Products: </h6>
+                  <% allData.forEach(element => { %>
+                  <div>&emsp; <%= element.productDetail.product_name %>  &emsp; Qty: <%= element.productQuantity %>  <label for="">x Rs.<%= element.productDetail.price %></label>&emsp; Price: Rs. <%= element.productPrice %></div> 
+                  <% }) %>
+                  <!-- <div>&emsp; white Shoes &emsp; Qty: 1 <label for="">x Rs.999</label>&emsp;Price: Rs.999</div> -->
+                  <hr>
+                  &emsp; <b>Total: &emsp; &emsp; &emsp;&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Rs.<%= sum %> </b>  
+                </div>
+              </div>
+              <div class="shipadrss col-md-6 mt-3">
+                <h5 class="white">Shipping Address:</h5>
+                <% address.forEach(data => { %>
+                  <div
+                  style="border: 1px solid"
+                  class="p-4 d-flex align-content-center align-items-center d9"
+                >
+                  <input type="radio" value="<%= data._id %>" name="address"/>
+                  <p class="ms-3">
+                    <b><%= name %> </b><br />
+                    <%= data.address %> <br>
+                    <%= data.state %>,
+                    <%= data.city %> <br>
+                    <%= data.pincode %> 
+                  </p>
+                </div>
+                <% }) %>
+                <% if (address.length == 1) { %>
+                  <div
+                  style="border: 1px solid"
+                  class="p-4 d-flex align-items-center d9"
+                >
+                  <a href="/user/add-address/checkout" class="btn btn-light">+ Add Address</a>
+                </div>
+                <% } %>
+              </div>
+              <div class="payment col-md-6 mt-3">
+                <h5 class="white">Payment:</h5>
+                <div
+                  style="border: 1px solid"
+                  class="p-4 d-flex align-content-center align-items-center d9"
+                >
+                  <input type="radio" name="pay" value="cod" class="me-1" required checked/>
+                    Cash On Delivery (COD)
+                </div>
+                <div
+                  style="border: 1px solid"
+                  class="p-4 d-flex align-content-center align-items-center d9"
+                >
+                <input type="radio" name="pay" value="Online" class="me-1" required/>
+                  Pay Online
+                </div>
+              </div>
+
+              <div class="payment col-md-6 mt-3 p-5" >
+                <button type="submit" class="btn btn-light btn-lg w-100 mt-4">
+                  Confirm Order
+                </button>
+                  <a
+                    href="/user/cart"
+                    class="btn btn-light btn-lg w-100 mt-2"
+                  >
+                    Go Back
+                  </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+    <div class="white">
+      <!-- <%= allData %> -->
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="/javascript/cart.js"></script>
+    <style>
+      .blue{
+        background-color: #003049;
+      }
+      .d9{
+        background-color: #d9d9d9;
+      }
+      .white{
+        color: white;
+      }
+    </style>
+  </body>
+</html>

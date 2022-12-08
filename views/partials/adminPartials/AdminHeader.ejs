@@ -15,7 +15,8 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="/css/adminCommon.css" type="text/css" />
-  <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <title>Admin panel</title>
 </head>
 
@@ -35,6 +36,10 @@
       </li>
       <li>
         <i class="material-symbols-outlined"> group </i
+        ><a href="/admin/home/Category">Category</a>
+      </li>
+      <li>
+        <i class="material-symbols-outlined"> group </i
         ><a href="/admin/home/users">Users</a>
       </li>
       <li>
@@ -51,7 +56,7 @@
       </li>
     </div>
   </section>
-  <section id="interface">
+  <section id="interface" style="z-index: 999">
     <div class="navigation">
       <div>
         <i id="menu-btn" class="material-symbols-outlined"> menu </i>

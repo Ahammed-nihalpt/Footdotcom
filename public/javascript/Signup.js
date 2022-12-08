@@ -181,7 +181,7 @@ function onlyLetters(str) {
 }
 
 function addressPat(str) {
-    return /^[a-z0-9\s,'-]*$/i.test(str);
+    return /^[a-z0-9\s,.'-]*$/i.test(str);
 }
 
 function onlyLettersunder(str) {

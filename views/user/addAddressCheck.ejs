@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- bootstrap css -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <!-- google font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/address.css" type="text/css" />
+    <title>Address</title>
+  </head>
+  <body>
+    <div class="body-div maincolor d-flex flex-column justify-content-center">
+      <div class="mid-div">
+        <div class="signup-div d-flex flex-column align-items-center">
+          <h4 class="order-1">Add Address</h4>
+        </div>
+        <form
+          action="/user/add-address/checkout"
+          method="post"
+          id="sign_form"
+          name="sign_form"
+        >
+          <div class="row">
+            <div class="col-12 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                name="address"
+                placeholder="Address"
+              />
+              <div id="addresserror" class="error-message"></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="state"
+                placeholder="State"
+                aria-label="state"
+                name="state"
+              />
+              <div id="stateerror" class="error-message"></div>
+            </div>
+            <div class="col-md-6 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="city"
+                placeholder="City"
+                aria-label="city"
+                name="city"
+              />
+              <div id="cityerror" class="error-message"></div>
+            </div>
+            <div class="col-12 input-control">
+              <input
+                type="text"
+                class="form-control"
+                id="pincode"
+                name="pincode"
+                placeholder="pincode"
+              />
+              <div id="pinerror" class="error-message"></div>
+            </div>
+            <div class="d-flex justify-content-center">
+              <form>
+                <button
+                  type="button"
+                  onclick="history.back()"
+                  class="submit-btn me-1"
+                >
+                  Back
+                </button>
+              </form>
+              <button type="submit" class="submit-btn">Add</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- bootstrap javascript -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
+    <!-- validation javascript -->
+    <script src="/javascript/address.js"></script>
+  </body>
+</html>

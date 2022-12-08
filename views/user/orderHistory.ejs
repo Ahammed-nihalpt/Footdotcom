@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/cart.css" type="text/css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/orderhHistory.css" type="text/css" />
+    <title>Document</title>
+  </head>
+  <body class="blue">
+    <%- include('../partials/userPartials/homeHeader.ejs') %>
+    <section class="mt-5 d-flex justify-content-center">
+      <!-- <div class="container"> -->
+      <div class="row gap-3 justify-content-center" style="width: 100%">
+        <div class="white p-3 col-md-10" style="border-radius: 5px">
+          <div
+            class="d-flex align-baseline justify-content-between align-items-center"
+          >
+            <h3>Order History</h3>
+            <a href="/user/home" class="textblue">
+              <h6>&larr; Continue Shopping</h6>
+            </a>
+          </div>
+          <hr />
+          <% if (allData.length === 0) { %>
+          <div
+            class="d-flex flex-column align-items-center justify-content-center"
+          >
+            <span class="material-symbols-outlined" style="font-size: 100px">
+              list_alt
+            </span>
+            <h1>No Order History</h1>
+            <a href="/user/home" style="color: #003049; text-decoration: none"
+              >Continue Shopping</a
+            >
+          </div>
+          <% } else {%> <%allData.forEach(data => { %>
+          <div class="col-md-12 p-3" style="border: 1px solid">
+            <div class="row">
+              <div
+                class="col-md-3 justify-content-center d-flex flex-column align-item-center"
+              >
+                <div><b>Order Id: </b> #<%= data.order_id %></div>
+                <div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#model-<%= data.order_id %>"
+                  >
+                    View Products
+                  </button>
+                </div>
+              </div>
+
+              <div
+                class="modal fade"
+                id="model-<%= data.order_id %>"
+                tabindex="-1"
+                aria-labelledby="<%= data.order_id %>Label"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1
+                        class="modal-title fs-5"
+                        id="<%= data.order_id %>Label"
+                      >
+                        Products
+                      </h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="p-3">
+                        <div class="d-flex flex-column justify-content-center">
+                          <% productData.forEach(element => { %> <% if
+                          (data.order_id == element.order_id+'') { %>
+                          <div
+                            class="d-flex align-items-center gap-5"
+                            style="border: 0.5px solid #d9d9d9"
+                          >
+                            <div>
+                              <img
+                                src="/images/<%= element.productDetail.product_img %>"
+                                alt=""
+                                style="width: 100px; height: 100px"
+                              />
+                            </div>
+                            <div><%= element.productDetail.product_name %></div>
+                            <div>Qty: <%= element.productQuantity %></div>
+                            <div>Total: <%= element.productPrice %></div>
+                          </div>
+                          <% } %> <% }) %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="col-md-3 justify-content-center d-flex flex-column align-items-center"
+              >
+                <dl>
+                  <dt>items</dt>
+                  <dd>
+                    <ul>
+                      <% productData.forEach(element => { %> <% if (data._id+''
+                      == ''+element._id) { %>
+                      <li>
+                        <%= element.productDetail.product_name %> &times; <%=
+                        element.productQuantity %>
+                      </li>
+                      <% } %> <% }) %>
+                    </ul>
+                  </dd>
+                </dl>
+              </div>
+              <div class="col-md-3 d-flex flex-column">
+                <b>Total Amount:</b>&nbsp;Rs.<%= data.totalAmount %> <br />
+                <b>Payment:</b> <%= data.paymentMethod %>(<%= data.paymentStatus
+                %>)
+              </div>
+              <div class="col-md-3 d-flex flex-column">
+                <b>Order Status: </b><%= data.orderStatus %> <br />
+                <b>delivery expected: </b><%= data.expectedDelivery %>
+              </div>
+              <div class="col-md-12 d-flex justify-content-center">
+                <!-- Modal -->
+              </div>
+            </div>
+          </div>
+          <% }) %> <% } %>
+        </div>
+      </div>
+    </section>
+    <style>
+      .blue {
+        background-color: #003049;
+      }
+      .white {
+        background-color: #d9d9d9;
+      }
+      .textblue {
+        color: #003049;
+        text-decoration: none;
+      }
+    </style>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="/javascript/cart.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.7.2/css/all.css"></script>
+  </body>
+</html>

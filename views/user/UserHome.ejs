@@ -4,23 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- bootstrap css -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-      rel="stylesheet"
-    />
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <link rel="stylesheet" href="/css/Landignpage.css" />
     <link rel="stylesheet" href="/css/Homepage.css" />
     <title>Home</title>
   </head>
-  <body>
+  <body style="background-color: #003049;">
     <div class="dropback"></div>
     <aside>
       <div>
@@ -70,14 +59,14 @@
     </aside>
     <%- include('../partials/userPartials/homeHeader.ejs') %>
     <section class="main-sec">
-      <div class="d-flex justify-content-between p-3 border-bottom main-sec">
+      <div class="d-flex justify-content-between p-3 border-bottom main-sec" style="background-color: #d9d9d9;">
         <div class="col-md-6">
           <button id="filterBtn">Filter</button>
         </div>
         <div class="col-md-3">
           <div class="d-flex">
             <input type="text" class="form-control" />
-            <button>search</button>
+            <button id="searchbtn">search</button>
           </div>
         </div>
       </div>
@@ -91,8 +80,9 @@
                 class="card-img-top"
                 alt="..."
               />
+              <hr>
               <div class="card-body">
-                <p class="card-text"><h6><%= data.product_name %></h6><br>Rs.<%= data.price %> </p>
+                <p class="card-text"><h6><%= data.product_name %></h6>Rs.<%= data.price %> </p>
               </div>
             </a>
         <%})%>
@@ -105,5 +95,11 @@
       crossorigin="anonymous"
     ></script>
     <script src="/javascript/HomepageFilter.js"></script>
+    <style>
+      
+
+      
+      
+    </style>
   </body>
 </html>

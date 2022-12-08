@@ -49,16 +49,24 @@ label.radio input:checked + span {
 .btn-danger {
   background-color: #fff !important;
   border-color: #003049 !important;
-  color: #003049;
+  color: #003049 !important;
 }
 .btn-danger:hover {
   background-color: #003049 !important;
   border-color: #003049 !important;
-  color: #fff;
+  color: #fff !important;
 }
 .btn-danger:focus {
   box-shadow: none;
 }
 .cart i {
   margin-right: 10px;
+}
+
+.blue{
+  background-color: #003049;
+}
+
+.white{
+  background-color: #fff;
 }

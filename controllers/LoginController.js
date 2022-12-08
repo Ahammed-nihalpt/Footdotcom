@@ -31,9 +31,11 @@ const loginPost = (req, res) => {
                     message = 'user is Blocked';
                     res.redirect('/login');
                 } else {
-                    session.userID = result.username;
+                    // console.log(result);
+                    session.userID = result.user_id;
                     session.accountType = result.account_type;
-                    res.send('user home');
+                    session.userName = result.name;
+                    res.redirect('/user/home');
                 }
             } else {
                 // eslint-disable-next-line object-shorthand
@@ -59,7 +61,7 @@ const logout = (req, res) => {
     const session = req.session;
     session.destroy();
     console.log('logout');
-    res.redirect('/login');
+    res.redirect('/');
 };
 
 module.exports = {

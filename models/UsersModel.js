@@ -1,11 +1,18 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable indent */
+// eslint-disable-next-line import/no-import-module-exports
 const mongoose = require('mongoose');
 
 // eslint-disable-next-line prefer-destructuring
 const Schema = mongoose.Schema;
+// eslint-disable-next-line no-unused-vars
+const { ObjectId } = Schema;
 
 const userSchema = new Schema({
+    user_id: {
+        type: String,
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -88,17 +95,14 @@ const productSchema = new Schema({
         required: true,
     },
     price: {
-        type: String,
+        type: Number,
         required: true,
     },
     stock: {
-        type: String,
+        type: Number,
         required: true,
     },
-    category_id: {
-        type: String,
-        required: true,
-    },
+    category: [ObjectId],
     brand: {
         type: String,
         required: true,
@@ -114,30 +118,101 @@ const productSchema = new Schema({
     },
 }, { timestamps: true });
 
+const cartSchema = new Schema({
+    user_id: {
+        type: String,
+        required: true,
+    },
+    products: [
+        {
+            product_id: {
+                type: ObjectId,
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
+});
+
 const CategorySchema = new Schema({
-    category_id: {
-        type: String,
-        required: true,
-    },
-    type: {
-        type: String,
-        required: true,
-    },
-    occasion: {
-        type: String,
-        required: true,
-    },
-    gender: {
+    category_name: {
         type: String,
         required: true,
     },
 });
+
+const SubCategorySchema = new Schema({
+    category_id: {
+        type: ObjectId,
+        required: true,
+    },
+    sub_category_name: {
+        type: String,
+        required: true,
+    },
+});
+
+const orderSchema = new Schema({
+    order_id: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    user_id: {
+        type: String,
+        required: true,
+    },
+    address: {
+        type: ObjectId,
+        required: true,
+    },
+    products: [
+        {
+            product_id: {
+                type: ObjectId,
+                required: true,
+                ref: 'products',
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
+    expectedDelivery: {
+        type: String,
+        required: true,
+    },
+    totalAmount: {
+        type: Number,
+        required: true,
+    },
+    paymentMethod: {
+        type: String,
+        required: true,
+    },
+    paymentStatus: {
+        type: String,
+        default: 'Pending',
+    },
+    orderStatus: {
+        type: String,
+        default: 'Pending',
+    },
+
+}, { timestamps: true });
 
 const Users = mongoose.model('User', userSchema);
 const Address = mongoose.model('Address', addressSchema);
 const Admin = mongoose.model('admin', adminSchema);
 const Product = mongoose.model('product', productSchema);
 const Category = mongoose.model('category', CategorySchema);
+const SubCategory = mongoose.model('subcategory', SubCategorySchema);
+const Cart = mongoose.model('cart', cartSchema);
+const Order = mongoose.model('order', orderSchema);
 
 module.exports = {
     Users,
@@ -145,4 +220,7 @@ module.exports = {
     Admin,
     Product,
     Category,
+    Cart,
+    Order,
+    SubCategory,
 };

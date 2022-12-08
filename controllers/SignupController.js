@@ -6,6 +6,7 @@
 let message = '';
 let otpver = 0;
 const client = require('twilio')('AC07a1dceecd2e171cd1f738dce7f9098a', '289c7d4874a474d43994933820e9bcd0');
+const uuid = require('uuid');
 const model = require('../models/UsersModel');
 
 const signupRender = (req, res) => {
@@ -31,7 +32,9 @@ const otpPost = (req, res) => {
         const email = req.body.email.trim();
         const phone = req.body.phone;
         const password = req.body.password;
+        const uid = uuid.v4();
         const user = new Users({
+            user_id: uid,
             name,
             username,
             email,
@@ -43,7 +46,7 @@ const otpPost = (req, res) => {
         user.save().then((result) => {
             const addressobj = new Address({
                 // eslint-disable-next-line no-underscore-dangle
-                user_id: result._id,
+                user_id: result.user_id,
                 address,
                 state,
                 city,

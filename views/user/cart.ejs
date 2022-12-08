@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/cart.css" type="text/css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>cart</title>
+  </head>
+  <body class="blue">
+    <%- include('../partials/userPartials/homeHeader.ejs') %>
+    <section class="mt-5 d-flex justify-content-center">
+      <!-- <div class="container"> -->
+      <div class="row gap-3 justify-content-center" style="width: 100%">
+        <div class="white p-3 col-md-8 col-12" style="border-radius: 5px">
+          <div
+            class="d-flex align-baseline justify-content-between align-items-center"
+          >
+            <h3>Shopping Cart</h3>
+            <a href="/user/home" class="textblue">
+              <h6>&larr; Continue Shopping</h6>
+            </a>
+          </div>
+          <div class="table-responsive">
+            <table
+              class="table table-striped"
+              style="text-align: center; vertical-align: middle"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Item</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">quantity</th>
+                  <th scope="col"></th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (allData.length === 0) { %>
+                <tr>
+                  <th colspan="5" class="">
+                    Your Cart is empty!!!
+                    <a href="/user/home" class="textblue">Continue Shopping</a>
+                  </th>
+                </tr>
+                <% } %> <% allData.forEach(data => { %>
+                <tr>
+                  <td>
+                    <a href="/user/home/<%= data.productDetail._id %>">
+                      <img
+                        src="/images/<%= data.productDetail.product_img %>"
+                        style="width: 70px; height: 70px"
+                        alt=""
+                      />
+                    </a>
+                  </td>
+                  <td>
+                    <dl>
+                      <dt><%= data.productDetail.product_name %></dt>
+                      <dd class="color">
+                        Color: <%= data.productDetail.color %>
+                      </dd>
+                    </dl>
+                  </td>
+
+                  <td>
+                    <div
+                      class="d-flex justify-content-center align-items-center"
+                    >
+                      <% if (data.productQuantity > 1) { %>
+                      <button
+                        class="cart-item-count me-1 me-md-3 btn btn-sm btn-success"
+                        onclick="changeQuantity('<%= data.productDetail._id %>','<%=data._id%>',-1,'<%= data.productQuantity %>')"
+                      >
+                        -
+                      </button>
+                      <% } %>
+                      <div class="align-self-center" id="quantity">
+                        <%= data.productQuantity %>
+                      </div>
+                      <% if (data.productQuantity < 5 && data.productQuantity <
+                      data.productDetail.stock) { %>
+                      <button
+                        class="cart-item-count btn btn-sm ms-1 ms-md-3 me-1 btn-success"
+                        onclick="changeQuantity('<%= data.productDetail._id %>','<%=data._id%>', 1,'<%= data.productQuantity %>')"
+                      >
+                        +
+                      </button>
+                      <% } %>
+
+                      <label class="d-none d-md-inline-block" for=""
+                        >&times; Rs.<%= data.productDetail.price %></label
+                      >
+                    </div>
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      onclick="deleteCartItem('<%= data.productDetail._id %>','<%=data._id%>')"
+                    >
+                      <i class="material-symbols-outlined"> delete </i>
+                    </button>
+                  </td>
+                  <td><i>Rs.<%= data.productPrice %></i></td>
+                </tr>
+                <% }) %> <% if (allData.length !== 0) { %> <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          class="col-md-3 white d-flex justify-content-center align-items-center"
+          style="border-radius: 5px"
+        >
+          <div class="d-flex flex-column align-items-center p-4">
+            <div class=""><h2>Cart total</h2></div>
+            <div>
+              <h3>Grand Total: Rs.<%= sum %></h3>
+            </div>
+            <a href="/checkout" class="btn btn-success">Check Out</a>
+          </div>
+        </div>
+      </div>
+      <!-- </div> -->
+    </section>
+    <style>
+      .blue {
+        background-color: #003049;
+      }
+      .white {
+        background-color: #d9d9d9;
+      }
+      .textblue {
+        color: #003049;
+        text-decoration: none;
+      }
+    </style>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="/javascript/cart.js"></script>
+  </body>
+</html>
