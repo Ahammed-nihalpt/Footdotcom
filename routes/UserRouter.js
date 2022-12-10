@@ -23,6 +23,9 @@ router.get('/checkout', middleware.userSession, controller.checkOutRender);
 
 // order confirm
 router.post('/order-confirmed', middleware.userSession, controller.confirmOrder);
+router.get('/order-success/:oid', middleware.userSession, controller.orderSuccessRender);
+router.get('/paymentFail', middleware.userSession, controller.paymentFailure);
+router.post('/verifyPayment', middleware.userSession, controller.verifyPayment);
 
 // order history
 router.get('/user/order-history', middleware.userSession, controller.orderHistoryRender);

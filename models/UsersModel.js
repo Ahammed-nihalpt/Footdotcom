@@ -202,6 +202,10 @@ const orderSchema = new Schema({
         type: String,
         default: 'Pending',
     },
+    order_placed_on: {
+        type: String,
+        required: true,
+    },
 
 }, { timestamps: true });
 

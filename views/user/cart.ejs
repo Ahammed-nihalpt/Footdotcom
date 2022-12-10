@@ -80,6 +80,14 @@
                       >
                         -
                       </button>
+                      <% } else { %>
+                      <button
+                        class="cart-item-count me-1 me-md-3 btn btn-sm btn-success"
+                        onclick="changeQuantity('<%= data.productDetail._id %>','<%=data._id%>',-1,'<%= data.productQuantity %>')"
+                        disabled
+                      >
+                        -
+                      </button>
                       <% } %>
                       <div class="align-self-center" id="quantity">
                         <%= data.productQuantity %>
@@ -88,6 +96,14 @@
                       data.productDetail.stock) { %>
                       <button
                         class="cart-item-count btn btn-sm ms-1 ms-md-3 me-1 btn-success"
+                        onclick="changeQuantity('<%= data.productDetail._id %>','<%=data._id%>', 1,'<%= data.productQuantity %>')"
+                      >
+                        +
+                      </button>
+                      <% } else { %>
+                      <button
+                        class="cart-item-count btn btn-sm ms-1 ms-md-3 me-1 btn-success"
+                        disabled
                         onclick="changeQuantity('<%= data.productDetail._id %>','<%=data._id%>', 1,'<%= data.productQuantity %>')"
                       >
                         +

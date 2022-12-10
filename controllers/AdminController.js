@@ -2,21 +2,43 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 const fs = require('fs');
+const moment = require('moment');
 // const uuid = require('uuid');
 const model = require('../models/UsersModel');
 
-const adminRender = (req, res) => {
-    // eslint-disable-next-line prefer-destructuring
-    const session = req.session;
-    let count = 0;
-    if (session.userID && session.accountType === 'admin') {
+const adminRender = async (req, res) => {
+    try {
         // eslint-disable-next-line no-unused-vars
-        const userCount = model.Users.countDocuments({}).then((result) => {
-            count = result;
-            res.render('admin/adminHome', { count });
+        const userCount = await model.Users.countDocuments({});
+        const productCount = await model.Product.countDocuments({});
+        const orderData = await model.Order.find({ orderStatus: { $ne: 'Cancelled' } });
+        const orderCount = await model.Order.countDocuments({});
+        const pendingOrder = await model.Order.find({ orderStatus: 'Pending' }).count();
+        // const pending = pendingOrder.length;
+        const completed = await model.Order.find({ orderStatus: 'Completed' }).count();
+        const delivered = await model.Order.find({ orderStatus: 'Delivered' }).count();
+        const cancelled = await model.Order.find({ orderStatus: 'Cancelled' }).count();
+        const cod = await model.Order.find({ paymentMethod: 'cod' }).count();
+        const online = await model.Order.find({ paymentMethod: 'online' }).count();
+        // eslint-disable-next-line arrow-body-style
+        const totalAmount = orderData.reduce((accumulator, object) => {
+            // eslint-disable-next-line no-return-assign, no-param-reassign
+            return (accumulator += object.totalAmount);
+        }, 0);
+        res.render('admin/adminHome', {
+            usercount: userCount,
+            productcount: productCount,
+            totalamount: totalAmount,
+            ordercount: orderCount,
+            pending: pendingOrder,
+            completed,
+            delivered,
+            cancelled,
+            cod,
+            online,
         });
-    } else {
-        res.send('404');
+    } catch (error) {
+        console.log(error);
     }
 };
 
@@ -462,6 +484,112 @@ const orderCancel = (req, res) => {
     });
 };
 
+const salesReportRender = async (req, res) => {
+    try {
+        const today = moment().startOf('day');
+        const endtoday = moment().endOf('day');
+        const monthstart = moment().startOf('month');
+        const monthend = moment().endOf('month');
+        // const today = moment('09-12-2022', 'DD-MM-YYYY').startOf('day');
+        // const endtoday = moment('10-12-2022', 'DD-MM-YYYY').endOf('day');
+        const daliyReport = await model.Order.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: today.toDate(),
+                        $lte: endtoday.toDate(),
+                    },
+                },
+            },
+            {
+                $lookup:
+                {
+                    from: 'users',
+                    localField: 'user_id',
+                    foreignField: 'user_id',
+                    as: 'user',
+                },
+            },
+            {
+                $project: {
+                    order_id: 1,
+                    user: 1,
+                    paymentStatus: 1,
+                    totalAmount: 1,
+                    orderStatus: 1,
+                },
+            },
+        ]);
+        const monthReport = await model.Order.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: monthstart.toDate(),
+                        $lte: monthend.toDate(),
+                    },
+                },
+            },
+            {
+                $lookup:
+                {
+                    from: 'users',
+                    localField: 'user_id',
+                    foreignField: 'user_id',
+                    as: 'user',
+                },
+            },
+            {
+                $project: {
+                    order_id: 1,
+                    user: 1,
+                    paymentStatus: 1,
+                    totalAmount: 1,
+                    orderStatus: 1,
+                },
+            },
+        ]);
+        res.render('admin/salesReport', { today: daliyReport, month: monthReport });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const salesCustomDate = async (req, res) => {
+    const { startDate, endDate } = req.body;
+    const start = moment(startDate, 'YYYY-MM-DD').startOf('day');
+    const end = moment(endDate, 'YYYY-MM-DD').endOf('day');
+
+    const cusReport = await model.Order.aggregate([
+        {
+            $match: {
+                createdAt: {
+                    $gte: start.toDate(),
+                    $lte: end.toDate(),
+                },
+            },
+        },
+        {
+            $lookup:
+            {
+                from: 'users',
+                localField: 'user_id',
+                foreignField: 'user_id',
+                as: 'user',
+            },
+        },
+        {
+            $project: {
+                order_id: 1,
+                user: 1,
+                paymentStatus: 1,
+                totalAmount: 1,
+                orderStatus: 1,
+            },
+        },
+    ]);
+    res.json(cusReport);
+};
+
 module.exports = {
     // admin
     adminRender,
@@ -493,4 +621,7 @@ module.exports = {
     changeOrderStatus,
     orderCompeleted,
     orderCancel,
+    // sales report
+    salesReportRender,
+    salesCustomDate,
 };

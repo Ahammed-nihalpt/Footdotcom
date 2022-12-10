@@ -41,4 +41,8 @@ router.post('/change-status', controller.changeOrderStatus);
 router.post('/order-completed', controller.orderCompeleted);
 router.post('/order-cancel', controller.orderCancel);
 
+// sales report
+router.get('/home/salesreport', controller.salesReportRender);
+router.post('/salesreport/customdate', controller.salesCustomDate);
+
 module.exports = router;

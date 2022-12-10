@@ -34,7 +34,7 @@
           ><a href="/admin/home/products">Products</a>
         </li>
         <li>
-          <i class="material-symbols-outlined"> group </i
+          <i class="material-symbols-outlined"> category </i
           ><a href="/admin/home/Category">Category</a>
         </li>
         <li>
@@ -77,38 +77,101 @@
           </div>
         </div>
       </div>
-      <h3 class="i-name">Home</h3>
-      <div class="values">
-        <div class="val-box">
+      <h3 class="i-name">Dashboard</h3>
+      <div class="values row gap-2 justify-content-evenly">
+        <div class="val-box col-md-3">
           <i class="material-symbols-outlined"> group </i>
           <div>
-            <h3><%= count %></h3>
+            <h3><%= usercount %></h3>
             <span>Total Users</span>
           </div>
         </div>
-        <div class="val-box">
-          <i class="material-symbols-outlined"> group </i>
+        <div class="val-box col-md-3">
+          <i class="material-symbols-outlined"> inventory_2 </i>
           <div>
-            <h3>8267</h3>
-            <span>Total Users</span>
+            <h3><%= productcount %></h3>
+            <span>Total Products</span>
           </div>
         </div>
-        <div class="val-box">
-          <i class="material-symbols-outlined"> group </i>
+        <div class="val-box col-md-3">
+          <i class="material-symbols-outlined"> list_alt </i>
           <div>
-            <h3>8267</h3>
-            <span>Total Users</span>
+            <h3><%= ordercount %></h3>
+            <span>Total Orders</span>
           </div>
         </div>
-        <div class="val-box">
-          <i class="material-symbols-outlined"> group </i>
+        <div class="val-box col-md-3">
+          <i class="material-symbols-outlined"> attach_money </i>
           <div>
-            <h3>8267</h3>
-            <span>Total Users</span>
+            <h3><%= totalamount %></h3>
+            <span>Total Income</span>
+          </div>
+        </div>
+        <div class="row gap-2 justify-content-center p-2">
+          <div class="col-md-7 mt-5 gbg" style="border-radius: 5px">
+            <canvas id="ordersStatusChart" class="h-100"> </canvas>
+          </div>
+          <div class="col-md-4 mt-5 gbg" style="border-radius: 5px">
+            <canvas id="Paystatus" class=""> </canvas>
           </div>
         </div>
       </div>
+      <input type="hidden" id="pending" value="<%= pending %>" />
+      <input type="hidden" id="completed" value="<%= completed %>" />
+      <input type="hidden" id="delivered" value="<%= delivered %>" />
+      <input type="hidden" id="cancelled" value="<%= cancelled %>" />
+      <input type="hidden" id="cod" value="<%= cod %>" />
+      <input type="hidden" id="online" value="<%= online %>" />
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const ctx = document.getElementById("ordersStatusChart");
+      const ctx1 = document.getElementById("Paystatus");
+      const pending = Number(document.getElementById("pending").value);
+      const completed = Number(document.getElementById("completed").value);
+      const delivered = Number(document.getElementById("delivered").value);
+      const cancelled = Number(document.getElementById("cancelled").value);
+      const cod = Number(document.getElementById("cod").value);
+      const online = Number(document.getElementById("online").value);
+
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Pending", "Delivered", "Cancelled", "Completed"],
+          datasets: [
+            {
+              label: "No .of Orders",
+              data: [pending, delivered, cancelled, completed],
+              borderWidth: 2,
+              backgroundColor: ["#003049", "#003049", "#003049", "#003049"],
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+      new Chart(ctx1, {
+        type: "pie",
+        data: {
+          labels: ["COD", "Online"],
+          datasets: [
+            {
+              label: "No .of Orders",
+              data: [cod, online],
+              borderWidth: 2,
+              backgroundColor: ["#003049", "#003000"],
+            },
+          ],
+        },
+        options: {},
+      });
+    </script>
     <script>
       $("#menu-btn").click(function () {
         $("#menu").toggleClass("active");

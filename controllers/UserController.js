@@ -2,7 +2,10 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 const mongoose = require('mongoose');
+const moment = require('moment');
+const crypto = require('crypto');
 const model = require('../models/UsersModel');
+const instance = require('../middleware/razorPay');
 
 const landingPageRender = (req, res) => {
     if (!req.session.userID) {
@@ -263,6 +266,7 @@ const checkOutRender = (req, res) => {
 };
 
 const confirmOrder = (req, res) => {
+    // console.log('nihal');
     const uid = req.session.userID;
     const paymethod = req.body.pay;
     const adrs = req.body.address;
@@ -318,37 +322,119 @@ const confirmOrder = (req, res) => {
                         console.log(erp);
                     });
                 }
-                const count = result.length;
+                // const count = result.length;
                 const sum = result
                     .reduce((accumulator, object) => accumulator + object.productPrice, 0);
-                model.Address.findOne({ _id: adrs }).then((adrss) => {
-                    model.Cart.findOne({ user_id: uid }).then((cartData) => {
-                        const someDate = new Date();
-                        const Days = 4;
-                        someDate.setDate(someDate.getDate() + Days);
-                        const ED = `${someDate.getFullYear()}-${someDate.getMonth() + 1}-${someDate.getDate()}`;
-                        const order = new Order({
-                            order_id: Date.now(),
-                            user_id: uid,
-                            // eslint-disable-next-line no-underscore-dangle
-                            address: adrs,
-                            products: cartData.products,
-                            totalAmount: sum,
-                            paymentMethod: paymethod,
-                            expectedDelivery: ED,
-                        });
-                        // eslint-disable-next-line no-unused-vars
-                        order.save().then((done) => {
-                            // eslint-disable-next-line no-unused-vars
-                            model.Cart.deleteOne({ user_id: uid }).then((r) => {
-                                res.render('user/orderSuccess', {
-                                    amount: sum, deladd: adrss, count, name: userData.name,
+                model.Cart.findOne({ user_id: uid }).then((cartData) => {
+                    const order = new Order({
+                        order_id: Date.now(),
+                        user_id: uid,
+                        // eslint-disable-next-line no-underscore-dangle
+                        address: adrs,
+                        order_placed_on: moment().format('DD-MM-YYYY'),
+                        products: cartData.products,
+                        totalAmount: sum,
+                        paymentMethod: paymethod,
+                        expectedDelivery: moment().add(4, 'days').format('MMM Do YY'),
+                    });
+                    // eslint-disable-next-line no-unused-vars
+                    order.save().then((done) => {
+                        // eslint-disable-next-line semi, no-underscore-dangle
+                        const oid = done._id;
+                        model.Cart.deleteOne({ user_id: uid }).then(() => {
+                            if (paymethod === 'cod') {
+                                console.log('nop');
+                                res.json([{ success: true, oid }]);
+                            } else if (paymethod === 'online') {
+                                console.log('nihhal');
+                                const amount = done.totalAmount * 100;
+                                const options = {
+                                    amount,
+                                    currency: 'INR',
+                                    receipt: `${oid}`,
+                                };
+                                instance.orders.create(options, (err, orders) => {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        res.json([{ success: false, orders }]);
+                                    }
                                 });
-                            });
+                            }
                         });
                     });
                 });
             });
+    });
+};
+
+const verifyPayment = (req, res) => {
+    console.log('ver');
+    const details = req.body;
+    let hmac = crypto.createHmac('sha256', 'uYglaEyoaZ1j8MXmPiCDHfZi');
+    hmac.update(
+        // eslint-disable-next-line operator-linebreak, prefer-template
+        details.payment.razorpay_order_id +
+        // eslint-disable-next-line operator-linebreak
+        '|' +
+        // eslint-disable-next-line comma-dangle
+        details.payment.razorpay_payment_id
+    );
+    hmac = hmac.digest('hex');
+    // eslint-disable-next-line eqeqeq
+    if (hmac == details.payment.razorpay_signature) {
+        const objId = mongoose.Types.ObjectId(details.order.receipt);
+        console.log(objId);
+        model.Order
+            .updateOne({ _id: objId }, { $set: { paymentStatus: 'Paid' } })
+            .then(() => {
+                res.json({ success: true, oid: details.order.receipt });
+            })
+            .catch((err) => {
+                console.log(err);
+                res.json({ status: false, err_message: 'payment failed' });
+            });
+    } else {
+        res.json({ status: false, err_message: 'payment failed' });
+    }
+};
+
+const paymentFailure = (req, res) => {
+    const details = req.body;
+    console.log(details);
+    res.send('payment failed');
+};
+
+const orderSuccessRender = (req, res) => {
+    console.log(req.params);
+    const oid = mongoose.Types.ObjectId(req.params.oid);
+    model.Order.aggregate([
+        { $match: { _id: oid } },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'user_id',
+                foreignField: 'user_id',
+                as: 'user',
+            },
+        },
+        {
+            $lookup: {
+                from: 'addresses',
+                localField: 'address',
+                foreignField: '_id',
+                as: 'address',
+            },
+        },
+    ]).then((result) => {
+        console.log(result);
+        res.render('user/orderSuccess', {
+            id: result[0].order_id,
+            amount: result[0].totalAmount,
+            deladd: result[0].address[0],
+            count: result[0].products.length,
+            name: result[0].user[0].name,
+        });
     });
 };
 
@@ -529,4 +615,7 @@ module.exports = {
     deleteAddress,
     changePassword,
     changePasswodPost,
+    orderSuccessRender,
+    verifyPayment,
+    paymentFailure,
 };
