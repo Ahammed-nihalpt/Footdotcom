@@ -16,9 +16,9 @@ document.getElementById('filterBtn').onclick = (e) => {
     openMenu();
 };
 
-document.getElementById('canBtn').onclick = (e) => {
-    closeMenu();
-};
+// document.getElementById('canBtn').onclick = (e) => {
+//     closeMenu();
+// };
 
 document.querySelector('aside button.close').onclick = (e) => {
     closeMenu();

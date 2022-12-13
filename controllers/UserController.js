@@ -7,30 +7,93 @@ const crypto = require('crypto');
 const model = require('../models/UsersModel');
 const instance = require('../middleware/razorPay');
 
-const landingPageRender = (req, res) => {
+const landingPageRender = async (req, res) => {
     if (!req.session.userID) {
-        model.Product.find().limit(7).then((result) => {
-            res.render('Landingpage', { allData: result });
-        }).catch((err) => {
-            console.log(err);
-        });
+        const result = await model.Product.find().limit(7);
+        res.render('Landingpage', { allData: result });
     } else {
         res.redirect('/login');
     }
 };
 
-const userHomeRender = (req, res) => {
+const homeGender = async (req, res) => {
+    let id;
+    console.log(req.params);
+    if (req.params.gender === 'men') {
+        id = mongoose.Types.ObjectId('6389f58469358426594f7f47');
+    } else if (req.params.gender === 'women') {
+        id = mongoose.Types.ObjectId('6396ef9df3aea571db60f1de');
+    } else if (req.params.gender === 'kids') {
+        id = mongoose.Types.ObjectId('6396efa4f3aea571db60f1e2');
+    }
     let count = 0;
+    const category = await model.Category.find();
+    const scategory = await model.SubCategory.find();
+    model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: id } }] }).then((result) => {
+        model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
+            if (doc) {
+                count = doc.products.length;
+            }
+            res.render('user/UserHome', {
+                allData: result, count, name: req.session.userName, category, scategory,
+            });
+        });
+    }).catch((error) => {
+        console.log(error);
+    });
+};
+
+const userHomeRender = async (req, res) => {
+    let count = 0;
+    const category = await model.Category.find();
+    const scategory = await model.SubCategory.find();
     model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }] }).then((result) => {
         model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
             if (doc) {
                 count = doc.products.length;
             }
-            res.render('user/UserHome', { allData: result, count, name: req.session.userName });
+            res.render('user/UserHome', {
+                allData: result, count, name: req.session.userName, category, scategory,
+            });
         });
     }).catch((error) => {
         console.log(error);
     });
+};
+
+const homeFilter = async (req, res) => {
+    console.log(Object.keys(req.body).length);
+    let count = 0;
+    const category = await model.Category.find();
+    const scategory = await model.SubCategory.find();
+    if (Object.keys(req.body).length === 0) {
+        console.log('hello');
+        model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }] }).then((result) => {
+            model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
+                if (doc) {
+                    count = doc.products.length;
+                }
+                res.render('user/UserHome', {
+                    allData: result, count, name: req.session.userName, category, scategory,
+                });
+            });
+        }).catch((error) => {
+            console.log(error);
+        });
+    } else {
+        const { ...all } = req.body;
+        const arr = [];
+        // eslint-disable-next-line no-restricted-syntax
+        for (const key in all) {
+            if (key) { arr.push(mongoose.Types.ObjectId(all[key])); }
+        }
+        console.log(arr);
+        const result = await model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: arr } }] });
+        console.log(result);
+        res.render('user/UserHome', {
+            allData: result, count, name: req.session.userName, category, scategory,
+        });
+    }
 };
 
 const userProductView = (req, res) => {
@@ -598,6 +661,7 @@ const changePasswodPost = (req, res) => {
 module.exports = {
     landingPageRender,
     userHomeRender,
+    homeFilter,
     userProductView,
     notFound,
     cartRender,
@@ -618,4 +682,5 @@ module.exports = {
     orderSuccessRender,
     verifyPayment,
     paymentFailure,
+    homeGender,
 };

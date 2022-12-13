@@ -10,6 +10,8 @@ router.get('/', controller.landingPageRender);
 
 // homePage
 router.get('/user/home', middleware.userSession, controller.userHomeRender);
+router.get('/user/home/filter/:gender', controller.homeGender);
+router.post('/user/home/filter', controller.homeFilter);
 router.get('/user/home/:id', middleware.userSession, controller.userProductView);
 
 // cart

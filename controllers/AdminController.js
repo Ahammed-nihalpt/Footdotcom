@@ -490,6 +490,8 @@ const salesReportRender = async (req, res) => {
         const endtoday = moment().endOf('day');
         const monthstart = moment().startOf('month');
         const monthend = moment().endOf('month');
+        const yearstart = moment().startOf('year');
+        const yearend = moment().endOf('year');
         // const today = moment('09-12-2022', 'DD-MM-YYYY').startOf('day');
         // const endtoday = moment('10-12-2022', 'DD-MM-YYYY').endOf('day');
         const daliyReport = await model.Order.aggregate([
@@ -548,7 +550,35 @@ const salesReportRender = async (req, res) => {
                 },
             },
         ]);
-        res.render('admin/salesReport', { today: daliyReport, month: monthReport });
+        const yearReport = await model.Order.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: yearstart.toDate(),
+                        $lte: yearend.toDate(),
+                    },
+                },
+            },
+            {
+                $lookup:
+                {
+                    from: 'users',
+                    localField: 'user_id',
+                    foreignField: 'user_id',
+                    as: 'user',
+                },
+            },
+            {
+                $project: {
+                    order_id: 1,
+                    user: 1,
+                    paymentStatus: 1,
+                    totalAmount: 1,
+                    orderStatus: 1,
+                },
+            },
+        ]);
+        res.render('admin/salesReport', { today: daliyReport, month: monthReport, year: yearReport });
     } catch (error) {
         console.log(error);
     }

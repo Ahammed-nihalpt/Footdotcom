@@ -10,18 +10,18 @@
         <div class="w-100 d-flex flex-column">
           <h3 class="i-names align-self-center">Subcategory</h3>
           <div class="ms-3">
-          <a href="/admin/home/category" class="btn btn-success">Category</a>
+          <a href="/admin/home/category" class="btn btn-success mb-4">Category</a>
           </div>
         </div>
         
         <div class="container">
           <div class="table-responsive">
-              <table class="table align-middle" style="text-align: center;" id="ctable">
+              <table class="table align-middle" style="text-align: center;" id="sctable">
                 <thead>
                   <tr>
-                      <th scope="col">Subcategory Name</th>
-                      <th scope="col">Category</th>
-                      <th scope="col">Options</th>
+                      <th scope="col" class="text-center">Subcategory Name</th>
+                      <th scope="col" class="text-center">Category</th>
+                      <th scope="col" class="text-center">Options</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -35,13 +35,11 @@
                             </td>
                         </tr>
                     <% }) %>
-                    <tr>
-                        <td colspan="3">
-                            <a href="/admin/home/subcategory/add" class="btn btn-success btn-sm">Add</a>
-                        </td>
-                    </tr>
                 </tbody>
               </table>
+              <div class="d-flex justify-content-center">
+                <a href="/admin/home/subcategory/add" class="btn btn-success">Add</a>
+              </div>
             </div>
     </section>
     <br> 
@@ -51,9 +49,9 @@
       $("#menu").toggleClass("active");
     });
 
-    // $(document).ready(function () {
-    // $('#ptable').DataTable();
-    // });
+    $(document).ready(function () {
+    $('#sctable').DataTable();
+    });
   </script>
   <style>
     #menu .items li:nth-child(3) {

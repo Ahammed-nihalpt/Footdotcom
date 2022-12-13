@@ -10,17 +10,17 @@
         <div class="w-100 d-flex flex-column">
           <h3 class="i-names align-self-center">Category</h3>
           <div class="ms-3">
-          <a href="/admin/home/subcategory" class="btn btn-success">SubCategory</a>
+          <a href="/admin/home/subcategory" class="btn btn-success mb-4">SubCategory</a>
           </div>
         </div>
         
         <div class="container">
           <div class="table-responsive">
-              <table class="table align-middle" style="text-align: center;" id="ctable">
+              <table class="table align-middle text-center" style="text-align: center;" id="ctable">
                 <thead>
-                  <tr>
-                      <th scope="col">Name</th>
-                      <th scope="col">Options</th>
+                  <tr class="text-center">
+                      <th scope="col" class="text-center">Name</th>
+                      <th scope="col" class="text-center">Options</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -33,13 +33,17 @@
                       </td>
                     </tr>
                   <% }) %>
-                    <tr>
-                        <td colspan="3">
+                    <!-- <tr>
+                        <td colspan="2">
                             <a href="/admin/home/category/add" class="btn btn-success btn-sm">Add</a>
                         </td>
-                    </tr>
+                        <td></td>
+                    </tr> -->
                 </tbody>
               </table>
+              <div class="d-flex justify-content-center">
+                <a href="/admin/home/category/add" class="btn btn-success">Add</a>
+              </div>
             </div>
     </section>
     <br> 
@@ -49,9 +53,9 @@
       $("#menu").toggleClass("active");
     });
 
-    // $(document).ready(function () {
-    // $('#ptable').DataTable();
-    // });
+    $(document).ready(function () {
+    $('#ctable').DataTable();
+    });
   </script>
   <style>
     #menu .items li:nth-child(3) {

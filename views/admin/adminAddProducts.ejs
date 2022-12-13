@@ -6,35 +6,41 @@
         <h3 class="i-names">Add Products</h3>
         <div class="container d-flex justify-content-center">
           <div class=" center-div p-2">
-            <form action="" method="post" enctype="multipart/form-data">
+            <form action="" method="post" enctype="multipart/form-data" id="add_product_table">
               <div class="row p-2 mt-3">
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Product Image:</label>
                   <input class="form-control" type="file" id="prodcutImage" name="prodcutImage">
+                  <div id="imageerror" class="error-message"></div>
                 </div>
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Product Name:</label>
                   <input class="form-control" placeholder="Product Name" type="text" id="productName" name="prodcutName">
+                  <div id="nameerror" class="error-message"></div>
                 </div>
               </div>
               <div class="row p-2">
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Product Price:</label>
                   <input class="form-control" placeholder="Product Price (in Rs.)" type="text" id="price" name="price">
+                  <div id="priceerror" class="error-message"></div>
                 </div>
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Stock:</label>
                   <input class="form-control" placeholder="Stock" type="text" id="stock" name="stock">
+                  <div id="stockerror" class="error-message"></div>
                 </div>
               </div>
               <div class="row p-2">
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Product color:</label>
                   <input class="form-control" placeholder="Product Color" type="text" id="color" name="color">
+                  <div id="colorerror" class="error-message"></div>
                 </div>
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Size:</label>
                   <input class="form-control" type="text" placeholder="Size" id="size" name="size">
+                  <div id="sizeerror" class="error-message"></div>
                 </div>
               </div>
               <div class="row p-2">
@@ -51,6 +57,7 @@
                 <div class="col-md-8 offset-md-2">
                   <label for="formFile" class="form-label">Brand:</label>
                   <input class="form-control" placeholder="Brand Name" type="text" id="brand" name="brand">
+                  <div id="branderror" class="error-message"></div>
               </div>
               </div>
               <div class="row p-2">
@@ -86,6 +93,7 @@
           </div>
       </div>
     </section>
+    <script src="/javascript/productAdd.js"></script>
 <script>
     $("#menu-btn").click(function () {
       $("#menu").toggleClass("active");
@@ -94,6 +102,19 @@
   <style>
     #menu .items li:nth-child(2) {
       border-left: 4px solid #fff;
+    }
+    .error{
+      border-color: rgb(249, 0, 0);
+    }
+    .success{
+      border-color: rgb(66, 249, 0);
+    }
+    .error-message{
+      height: 18px;
+    color: #f20a0a;
+    font-size: 9px;
+    margin-top: 0px;
+    margin-left: 10px;
     }
   </style>
   <script
