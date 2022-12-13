@@ -1,4 +1,6 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable no-undef */
+/* eslint-disable no-restricted-globals */
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
 const openMenu = () => {

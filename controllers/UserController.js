@@ -61,6 +61,33 @@ const userHomeRender = async (req, res) => {
     });
 };
 
+const search = async (req, res) => {
+    let count = 0;
+    const category = await model.Category.find();
+    const scategory = await model.SubCategory.find();
+    console.log(req.body);
+    const searchvalue = req.body.searchinput;
+    model.Product.find({
+        $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, {
+            product_name: new RegExp(searchvalue, 'i'),
+        }],
+    }).then((result) => {
+        model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
+            if (doc) {
+                count = doc.products.length;
+            }
+            res.render('user/UserHome', {
+                allData: result, count, name: req.session.userName, category, scategory,
+            });
+        });
+    }).catch((error) => {
+        console.log(error);
+    });
+    // const result = await model.Product.find({
+    //     product_name: new RegExp(searchvalue, 'i'),
+    // });
+};
+
 const homeFilter = async (req, res) => {
     console.log(Object.keys(req.body).length);
     let count = 0;
@@ -152,6 +179,7 @@ const cartRender = (req, res) => {
             $project: {
                 productItem: '$products.product_id',
                 productQuantity: '$products.quantity',
+                productSize: '$products.size',
             },
         },
         {
@@ -166,6 +194,7 @@ const cartRender = (req, res) => {
             $project: {
                 productItem: 1,
                 productQuantity: 1,
+                productSize: 1,
                 productDetail: { $arrayElemAt: ['$productDetail', 0] },
             },
         },
@@ -178,6 +207,7 @@ const cartRender = (req, res) => {
         },
     ])
         .exec().then((result) => {
+            // console.log(result);
             const sum = result
                 .reduce((accumulator, object) => accumulator + object.productPrice, 0);
             const count = result.length;
@@ -188,7 +218,7 @@ const cartRender = (req, res) => {
 };
 
 const addToCart = (req, res) => {
-    const { pid } = req.params;
+    const { size, pid } = req.body;
     const uid = req.session.userID;
     const { Cart } = model;
     Cart.findOne({ user_id: uid }).then((result) => {
@@ -203,7 +233,17 @@ const addToCart = (req, res) => {
                     if (!docs) {
                         Cart.findOneAndUpdate(
                             { user_id: uid },
-                            { $push: { products: { product_id: pid, quantity: 1 } } },
+                            {
+                                $push:
+                                {
+                                    products:
+                                    {
+                                        product_id: pid,
+                                        quantity: 1,
+                                        size: Number(size),
+                                    },
+                                },
+                            },
                         )
                             .then(() => {
                                 res.redirect(`/user/home/${pid}`);
@@ -227,6 +267,7 @@ const addToCart = (req, res) => {
                 products: {
                     product_id: pid,
                     quantity: 1,
+                    size: Number(size),
                 },
             });
             cart.save().then(() => {
@@ -289,6 +330,7 @@ const checkOutRender = (req, res) => {
             $project: {
                 productItem: '$products.product_id',
                 productQuantity: '$products.quantity',
+                productSize: '$products.size',
             },
         },
         {
@@ -303,6 +345,7 @@ const checkOutRender = (req, res) => {
             $project: {
                 productItem: 1,
                 productQuantity: 1,
+                productSize: 1,
                 productDetail: { $arrayElemAt: ['$productDetail', 0] },
             },
         },
@@ -347,6 +390,7 @@ const confirmOrder = (req, res) => {
                 $project: {
                     productItem: '$products.product_id',
                     productQuantity: '$products.quantity',
+                    productSize: '$products.size',
                 },
             },
             {
@@ -361,6 +405,7 @@ const confirmOrder = (req, res) => {
                 $project: {
                     productItem: 1,
                     productQuantity: 1,
+                    productSize: 1,
                     productDetail: { $arrayElemAt: ['$productDetail', 0] },
                 },
             },
@@ -406,7 +451,7 @@ const confirmOrder = (req, res) => {
                         const oid = done._id;
                         model.Cart.deleteOne({ user_id: uid }).then(() => {
                             if (paymethod === 'cod') {
-                                console.log('nop');
+                                // console.log('nop');
                                 res.json([{ success: true, oid }]);
                             } else if (paymethod === 'online') {
                                 console.log('nihhal');
@@ -515,6 +560,7 @@ const orderHistoryRender = (req, res) => {
             $project: {
                 productItem: '$products.product_id',
                 productQuantity: '$products.quantity',
+                productSize: '$products.size',
                 order_id: 1,
                 address: 1,
                 expectedDelivery: 1,
@@ -662,6 +708,7 @@ module.exports = {
     landingPageRender,
     userHomeRender,
     homeFilter,
+    search,
     userProductView,
     notFound,
     cartRender,

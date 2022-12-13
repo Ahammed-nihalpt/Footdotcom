@@ -4,7 +4,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-console */
 let message = '';
-let otpver = 0;
+// let otpver = 0;
 const client = require('twilio')('AC07a1dceecd2e171cd1f738dce7f9098a', '289c7d4874a474d43994933820e9bcd0');
 const uuid = require('uuid');
 const model = require('../models/UsersModel');
@@ -18,7 +18,10 @@ const otpRender = (req, res) => {
     res.render('otp');
 };
 
-const otpPost = (req, res) => {
+const otpPost = async (req, res) => {
+    const phone = req.body.phone;
+    const otpdata = await model.OTP.findOne({ otp_id: phone });
+    const otpver = otpdata.otp;
     if (otpver === Number(req.body.otp)) {
         // eslint-disable-next-line prefer-destructuring
         const Users = model.Users;
@@ -30,7 +33,6 @@ const otpPost = (req, res) => {
         const city = req.body.city;
         const pincode = req.body.pincode;
         const email = req.body.email.trim();
-        const phone = req.body.phone;
         const password = req.body.password;
         const uid = uuid.v4();
         const user = new Users({
@@ -54,7 +56,9 @@ const otpPost = (req, res) => {
             });
             addressobj.save().then((results) => {
                 if (results) {
-                    res.render('success');
+                    model.OTP.findOneAndDelete({ otp_id: phone }).then(() => {
+                        res.render('success');
+                    });
                 } else {
                     console.log('error inserting addess');
                 }
@@ -70,7 +74,7 @@ const otpPost = (req, res) => {
     }
 };
 
-const signupPost = (req, res) => {
+const signupPost = async (req, res) => {
     const data = { ...req.body };
     const email = data.email;
     const phone = Number(data.phone);
@@ -89,10 +93,17 @@ const signupPost = (req, res) => {
                             res.redirect('/signup');
                             message = '';
                         } else {
-                            otpver = Math.floor(100000 + Math.random() * 900000);
-                            const tonumber = `+91${data.phone}`;
-                            sendOTP(tonumber, otpver);
-                            res.render('otp', { data });
+                            const otpver = Math.floor(100000 + Math.random() * 900000);
+                            const OTP = model.OTP;
+                            const otp = new OTP({
+                                otp: otpver,
+                                otp_id: data.phone,
+                            });
+                            otp.save().then(() => {
+                                const tonumber = `+91${data.phone}`;
+                                sendOTP(tonumber, otpver);
+                                res.render('otp', { data });
+                            });
                         }
                     });
             }

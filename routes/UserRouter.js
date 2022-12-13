@@ -10,13 +10,14 @@ router.get('/', controller.landingPageRender);
 
 // homePage
 router.get('/user/home', middleware.userSession, controller.userHomeRender);
-router.get('/user/home/filter/:gender', controller.homeGender);
-router.post('/user/home/filter', controller.homeFilter);
+router.get('/user/home/filter/:gender', middleware.userSession, controller.homeGender);
+router.post('/user/home/filter', middleware.userSession, controller.homeFilter);
+router.post('/user/home', middleware.userSession, controller.search);
 router.get('/user/home/:id', middleware.userSession, controller.userProductView);
 
 // cart
 router.get('/user/cart', middleware.userSession, controller.cartRender);
-router.get('/user/addtocart/:pid', middleware.userSession, controller.addToCart);
+router.post('/user/addtocart', middleware.userSession, controller.addToCart);
 router.post('/change-product-quantity', middleware.userSession, controller.cartQuantity);
 router.post('/delete-cart-product', middleware.userSession, controller.cartItemDelete);
 

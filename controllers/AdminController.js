@@ -208,6 +208,13 @@ const productDeactivate = (req, res) => {
         });
 };
 
+const addSize = async (req, res) => {
+    console.log(req.body);
+    const { size, product } = req.body;
+    await model.Product.findByIdAndUpdate({ _id: product }, { $push: { size } });
+    res.send('success');
+};
+
 const productDelete = (req, res) => {
     // console.log(req.params.id);
     // eslint-disable-next-line no-unused-vars
@@ -636,6 +643,7 @@ module.exports = {
     productDelete,
     productEdit,
     productEditPost,
+    addSize,
     categoryRender,
     categoryAdd,
     categoryAddPost,

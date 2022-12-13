@@ -40,11 +40,13 @@
           <button id="filterBtn">Filter</button>
         </div>
         <div class="col-md-3">
+          <form action="/user/home" method="post">
           <div class="d-flex">
-            <input type="text" class="form-control" />
-            <button id="searchbtn">search</button>
+              <input type="text" class="form-control" name="searchinput" id="search-input"/>
+              <button type="submit" id="searchbtn">search</button>
           </div>
-        </div>
+        </form>
+      </div>
       </div>
       <div
         class="row gap-5 justify-content-center p-5 align-items-stretch main-sec me-0"
@@ -70,6 +72,7 @@
       integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
       crossorigin="anonymous"
     ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="/javascript/HomepageFilter.js"></script>
     <style>
       .bth{

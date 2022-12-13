@@ -52,9 +52,52 @@
                       </td>
                       <td><%= data.brand %></td>
                       <td><%= data.color %></td>
-                      <td><%= data.size %></td>
-                      <td><%= data.product_status %></td>
+                      <td>
+                        <!-- <= data.size > -->
+                        <!-- <button class="btn btn-sm btn-outline-info">
+                          size
+                        </button> -->
+                        <!-- Modal -->
+                        <div class="modal fade" id="s-<%= data._id %>Modal" aria-hidden="true" aria-labelledby="s-<%= data._id %>ModalToggleLabel" tabindex="-1">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="s-<%= data._id %>ModalToggleLabel">Size</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <div>
+                                  <%= data.size %> 
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button class="btn btn-primary" data-bs-target="#add-<%= data._id %>ModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Add</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal fade" id="add-<%= data._id %>ModalToggle2" aria-hidden="true" aria-labelledby="add-<%= data._id %>ModalToggleLabel2" tabindex="-1">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="add-<%= data._id %>ModalToggleLabel2">Add</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                  <input class="form-control" id="size-input<%= data._id %>" type="number">
+                                  <button class="btn btn-secondary mt-1" type="button" onclick="addsize('<%= data._id %>')">Submit</button>
+                              </div>
+                              <div class="modal-footer">
+                                <button class="btn btn-primary" data-bs-target="#s-<%= data._id %>Modal" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <a class="btn btn-sm btn-outline-info" data-bs-toggle="modal" href="#s-<%= data._id %>Modal" role="button">Size</a>        
+                      </td>
+                      <td class="text-center"><%= data.product_status %></td>
                       <td colspan="3">
+                        <div class="d-flex flex-column gap-1">
                         <% if(data.product_status === 'active') { %> 
                           <a
                           href="/admin/home/product/deactivate/<%= data._id %>"
@@ -86,6 +129,7 @@
                               role="button"
                               aria-disabled="true"
                               >Edit</a>
+                            </div>
                       </td>
                   </tr>
                   <%})%>
@@ -102,6 +146,23 @@
     $(document).ready(function () {
     $('#ptable').DataTable();
     });
+
+    function addsize(id) {
+      const size = document.getElementById('size-input'+id).value;
+      $.ajax({
+          url: '/admin/home/addsize',
+          data: {
+              size,
+              product: id,
+          },
+          method: 'post',
+          success: (res) => {
+              // document.getElementById('quantity').innerText = Number(qty) + Number(count);
+              location.reload();
+              // $('#quantity').load(`${document.URL} #quantity`);
+          },
+      });
+    }
   </script>
   <style>
     #menu .items li:nth-child(2) {

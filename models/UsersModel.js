@@ -133,6 +133,10 @@ const cartSchema = new Schema({
                 type: Number,
                 required: true,
             },
+            size: {
+                type: Number,
+                required: true,
+            },
         },
     ],
 });
@@ -180,6 +184,10 @@ const orderSchema = new Schema({
                 type: Number,
                 required: true,
             },
+            size: {
+                type: Number,
+                required: true,
+            },
         },
     ],
     expectedDelivery: {
@@ -209,9 +217,21 @@ const orderSchema = new Schema({
 
 }, { timestamps: true });
 
+const OTPSchema = new Schema({
+    otp: {
+        type: String,
+        required: true,
+    },
+    otp_id: {
+        type: String,
+        required: true,
+    },
+});
+
 const Users = mongoose.model('User', userSchema);
 const Address = mongoose.model('Address', addressSchema);
 const Admin = mongoose.model('admin', adminSchema);
+const OTP = mongoose.model('otp', OTPSchema);
 const Product = mongoose.model('product', productSchema);
 const Category = mongoose.model('category', CategorySchema);
 const SubCategory = mongoose.model('subcategory', SubCategorySchema);
@@ -227,4 +247,5 @@ module.exports = {
     Cart,
     Order,
     SubCategory,
+    OTP,
 };

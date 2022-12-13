@@ -49,6 +49,9 @@ form.addEventListener('submit', (event) => {
         } else if (isNaN(Number(pricevalue))) {
             setError(Price, 'should only contain numbers', 'priceerror');
             flag = 1;
+        } else if (!isInDesiredForm(pricevalue)) {
+            setError(Price, 'should only contain positive numbers', 'priceerror');
+            flag = 1;
         } else {
             setSuccess(Price, 'priceerror');
             flag = 0;
@@ -60,6 +63,9 @@ form.addEventListener('submit', (event) => {
             flag = 1;
         } else if (isNaN(Number(stockvalue))) {
             setError(Stock, 'Stock is invalid', 'stockerror');
+            flag = 1;
+        } else if (!isInDesiredForm(stockvalue)) {
+            setError(Price, 'should only contain positive numbers', 'priceerror');
             flag = 1;
         } else {
             setSuccess(Stock, 'stockerror');
@@ -84,6 +90,9 @@ form.addEventListener('submit', (event) => {
             flag = 1;
         } else if (isNaN(Number(sizevalue))) {
             setError(Size, 'Size is invalid', 'sizeerror');
+            flag = 1;
+        } else if (!isInDesiredForm(sizevalue)) {
+            setError(Price, 'should only contain positive numbers', 'priceerror');
             flag = 1;
         } else {
             setSuccess(Size, 'sizeerror');
@@ -127,6 +136,11 @@ function onlyLetters(str) {
 
 function imageval(params) {
     return /\.jpe?g$/i.test(params);
+}
+
+function isInDesiredForm(str) {
+    const n = Math.floor(Number(str));
+    return n !== Infinity && String(n) === str && n >= 0;
 }
 // eslint-disable-next-line no-unused-vars
 function myFunction() {

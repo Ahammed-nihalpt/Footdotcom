@@ -14,8 +14,9 @@ router.post('/home/products/add', middleware.adminSession, controller.adminAddPr
 router.get('/home/product/activate/:id', middleware.adminSession, controller.productActivate);
 router.get('/home/product/deactivate/:id', middleware.adminSession, controller.productDeactivate);
 router.get('/home/product/delete/:id/:img', middleware.adminSession, controller.productDelete);
-router.get('/home/product/edit/:id', controller.productEdit);
-router.post('/edit/product/:id/:img', controller.productEditPost);
+router.get('/home/product/edit/:id', middleware.adminSession, controller.productEdit);
+router.post('/home/addsize', middleware.adminSession, controller.addSize);
+router.post('/edit/product/:id/:img', middleware.adminSession, controller.productEditPost);
 
 // user router
 router.get('/home/users', middleware.adminSession, controller.adminUsersRender);
@@ -24,25 +25,25 @@ router.get('/home/user/unblock/:id', middleware.adminSession, controller.adminUn
 router.get('/home/user/delete/:id', middleware.adminSession, controller.adminDeleteUser);
 
 // cartegory
-router.get('/home/category', controller.categoryRender);
-router.get('/home/category/add', controller.categoryAdd);
-router.post('/category/add', controller.categoryAddPost);
-router.get('/edit/category/:id', controller.editCategoryRender);
-router.post('/edit/category/:id', controller.editCategoryPost);
-router.get('/home/subcategory', controller.subcategoryRender);
-router.get('/home/subcategory/add', controller.addSubcategoryRender);
-router.post('/subcategory/add', controller.addSubcategpryPost);
-router.get('/edit/subcategory/:id', controller.editSubcategoryRender);
-router.post('/edit/subcategory/:id', controller.editSubcategoryPost);
+router.get('/home/category', middleware.adminSession, controller.categoryRender);
+router.get('/home/category/add', middleware.adminSession, controller.categoryAdd);
+router.post('/category/add', middleware.adminSession, controller.categoryAddPost);
+router.get('/edit/category/:id', middleware.adminSession, controller.editCategoryRender);
+router.post('/edit/category/:id', middleware.adminSession, controller.editCategoryPost);
+router.get('/home/subcategory', middleware.adminSession, controller.subcategoryRender);
+router.get('/home/subcategory/add', middleware.adminSession, controller.addSubcategoryRender);
+router.post('/subcategory/add', middleware.adminSession, controller.addSubcategpryPost);
+router.get('/edit/subcategory/:id', middleware.adminSession, controller.editSubcategoryRender);
+router.post('/edit/subcategory/:id', middleware.adminSession, controller.editSubcategoryPost);
 
 // Orders
-router.get('/home/orders', controller.orderRender);
-router.post('/change-status', controller.changeOrderStatus);
-router.post('/order-completed', controller.orderCompeleted);
-router.post('/order-cancel', controller.orderCancel);
+router.get('/home/orders', middleware.adminSession, controller.orderRender);
+router.post('/change-status', middleware.adminSession, controller.changeOrderStatus);
+router.post('/order-completed', middleware.adminSession, controller.orderCompeleted);
+router.post('/order-cancel', middleware.adminSession, controller.orderCancel);
 
 // sales report
-router.get('/home/salesreport', controller.salesReportRender);
-router.post('/salesreport/customdate', controller.salesCustomDate);
+router.get('/home/salesreport', middleware.adminSession, controller.salesReportRender);
+router.post('/salesreport/customdate', middleware.adminSession, controller.salesCustomDate);
 
 module.exports = router;

@@ -80,6 +80,7 @@
                       <td><%= data.createdAt %></td>
                       <td><%= data.expectedDelivery %></td>
                       <td>
+                        <div class="d-flex flex-column">
                         <button
                           type="button"
                           class="btn btn-primary btn-sm"
@@ -133,6 +134,7 @@
                                             <% data.products.forEach(ele => { %>
                                               <% if (element._id+''== ele.product_id+'') { %>
                                                 Qty: <%= ele.quantity %>
+                                                Size: <%= ele.size %>
                                                 <% } %>
                                             <% }) %>
                                           </div>
@@ -187,6 +189,7 @@
                               </div>
                             </div>
                           </div>
+                        </div>
                       </td>
                       <td>
                         <% if (data.orderStatus != 'Completed') { %>

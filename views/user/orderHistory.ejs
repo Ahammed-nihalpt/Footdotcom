@@ -95,7 +95,7 @@
                           <% productData.forEach(element => { %> <% if
                           (data.order_id == element.order_id+'') { %>
                           <div
-                            class="d-flex align-items-center gap-5"
+                            class="d-flex justify-content-start"
                             style="border: 0.5px solid #d9d9d9"
                           >
                             <div>
@@ -105,9 +105,14 @@
                                 style="width: 100px; height: 100px"
                               />
                             </div>
-                            <div><%= element.productDetail.product_name %></div>
-                            <div>Qty: <%= element.productQuantity %></div>
-                            <div>Total: <%= element.productPrice %></div>
+                            <div>
+                              <div>
+                                <%= element.productDetail.product_name %>
+                              </div>
+                              <div>Qty: <%= element.productQuantity %></div>
+                              <div>Size: <%= element.productSize %></div>
+                              <div>Total: <%= element.productPrice %></div>
+                            </div>
                           </div>
                           <% } %> <% }) %>
                         </div>
