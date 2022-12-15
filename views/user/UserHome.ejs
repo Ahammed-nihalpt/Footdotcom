@@ -43,13 +43,17 @@
           <form action="/user/home" method="post">
           <div class="d-flex">
               <input type="text" class="form-control me-2" placeholder="Search" name="searchinput" id="search-input"/>
-              <button type="submit" id="searchbtn">search</button>
+              <button type="submit" id="searchbtn">
+                <div class="d-flex justify-content-center align-items-center">
+                  <span>Search</span>
+                </div>
+              </button>
           </div>
         </form>
       </div>
       </div>
       <div
-        class="row gap-5 justify-content-center p-5 align-items-stretch main-sec me-0"
+        class="row gap-5 justify-content-center p-5 align-items-stretch main-sec"
       >
         <% allData.forEach(data =>{ %>
             <a class="card col-md-3 col-sm-4 nonlink" href="/user/home/<%= data._id %>" style="width: 18rem">

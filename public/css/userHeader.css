@@ -1,16 +1,23 @@
-.mar-left{
-    margin-right: -360px;
-    width: 50%;
+.mar-left {
+  margin-right: -360px;
+  width: 50%;
 }
-.nonlink{
-    text-decoration: none;
-    color: #000000;
+.nonlink {
+  text-decoration: none;
+  color: #000000;
 }
 
-.nonlink:hover{
-    color: #000000;
+.nonlink:hover {
+  color: #000000;
 }
-.mar-left{
-    margin-right: -360px;
-    width: 50%;
+.mar-left {
+  margin-right: -360px;
+  width: 50%;
+}
+
+@media (max-width: 480px) {
+  .mar-left {
+    margin-right: -197px;
+    width: 37%;
+  }
 }

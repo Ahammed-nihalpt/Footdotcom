@@ -131,9 +131,6 @@ const search = async (req, res) => {
         .catch((error) => {
             console.log(error);
         });
-    // const result = await model.Product.find({
-    //     product_name: new RegExp(searchvalue, 'i'),
-    // });
 };
 
 const homeFilter = async (req, res) => {
@@ -194,7 +191,7 @@ const homeFilter = async (req, res) => {
     }
 };
 
-const userProductView = (req, res) => {
+const userProductView = async (req, res) => {
     const id = mongoose.Types.ObjectId(req.params.id);
     let count = 0;
     model.Product.aggregate([
@@ -221,8 +218,28 @@ const userProductView = (req, res) => {
                     count = doc.products.length;
                 }
                 model.Category.find().then((cate) => {
-                    res.render('user/UserProductView', {
-                        allData: result, inCart, count, name: req.session.userName, cate,
+                    model.Wishlist.findOne(
+                        {
+                            $and: [{ userId: req.session.userID },
+                            { product: { $elemMatch: { productId: id } } }],
+                        },
+                    ).then((wish) => {
+                        let wid = '';
+                        let inwish = false;
+                        if (wish) {
+                            inwish = true;
+                            // eslint-disable-next-line no-underscore-dangle
+                            wid = wish._id;
+                        }
+                        res.render('user/UserProductView', {
+                            allData: result,
+                            inCart,
+                            count,
+                            name: req.session.userName,
+                            cate,
+                            inwish,
+                            wid,
+                        });
                     });
                 });
             }).catch((error) => {
@@ -235,6 +252,116 @@ const userProductView = (req, res) => {
 
 const notFound = (req, res) => {
     res.render('404');
+};
+
+const wishlistRender = async (req, res) => {
+    const uid = req.session.userID;
+    // eslint-disable-next-line no-underscore-dangle
+    const cartData = await model.Cart.findOne({ user_id: uid });
+    let count = cartData?.products?.length;
+    // eslint-disable-next-line no-underscore-dangle
+    const wishlistDetails = await model.Wishlist.findOne({ userId: uid });
+    let wishCount = wishlistDetails?.product?.length;
+    if (wishlistDetails == null) {
+        wishCount = 0;
+    }
+    if (cartData == null) {
+        count = 0;
+    }
+    const wishlistData = await model.Wishlist.aggregate([
+        {
+            // eslint-disable-next-line object-shorthand
+            $match: { userId: uid },
+        },
+        {
+            $unwind: '$product',
+        },
+        {
+            $project: {
+                productItem: '$product.productId',
+            },
+        },
+        {
+            $lookup: {
+                from: 'products',
+                localField: 'productItem',
+                foreignField: '_id',
+                as: 'productDetail',
+            },
+        },
+        {
+            $project: {
+                productItem: 1,
+                productDetail: { $arrayElemAt: ['$productDetail', 0] },
+            },
+        },
+    ]);
+    res.render(
+        'user/wishlist',
+        {
+            name: req.session.userName,
+            count,
+            wishlistData,
+            wishCount,
+        },
+    );
+};
+
+const addToWishlist = async (req, res) => {
+    const uid = req.session.userID;
+    const { pid } = req.body;
+    const proObj = {
+        productId: pid,
+    };
+    const userWishlist = await model.Wishlist.findOne({ userId: uid });
+    const verify = await model.Cart.findOne(
+        { user_id: uid },
+        { product: { $elemMatch: { productId: pid } } },
+    );
+    if (verify?.products?.length) {
+        res.json({ cart: true });
+    } else {
+        // eslint-disable-next-line no-lonely-if
+        if (userWishlist) {
+            const proExist = userWishlist.product.findIndex(
+                (product) => product.productId === pid,
+            );
+            if (proExist !== -1) {
+                res.json({ productExist: true });
+            } else {
+                model.Wishlist
+                    .updateOne({ userId: uid }, { $push: { product: proObj } })
+                    .then(() => {
+                        res.json({ success: true });
+                    });
+            }
+        } else {
+            model.Wishlist
+                .create({
+                    userId: uid,
+                    product: [
+                        {
+                            productId: pid,
+                        },
+                    ],
+                })
+                .then(() => {
+                    res.json({ status: true });
+                });
+        }
+    }
+};
+
+const removeWishlistProduct = async (req, res) => {
+    const { pid, wid } = req.body;
+    await model.Wishlist
+        .updateOne(
+            { _id: wid, 'product.productId': pid },
+            { $pull: { product: { productId: pid } } },
+        )
+        .then(() => {
+            res.json({ status: true });
+        });
 };
 
 const cartRender = (req, res) => {
@@ -800,4 +927,7 @@ module.exports = {
     verifyPayment,
     paymentFailure,
     homeGender,
+    wishlistRender,
+    addToWishlist,
+    removeWishlistProduct,
 };

@@ -109,7 +109,7 @@ aside button.close {
   border-radius: 5px;
   border: none;
   width: 100px;
-  height: 40 px;
+  height: 40px;
   color: #fff;
   font-size: 20px;
   background-color: #002f496b;
@@ -122,7 +122,7 @@ aside button.close {
   border-radius: 5px;
   border: none;
   width: 100px;
-  height: 40 px;
+  height: 40px;
   color: #fff;
   font-size: 20px;
   background-color: #002f496b;
@@ -130,4 +130,47 @@ aside button.close {
 
 #searchbtn:hover {
   background-color: #003049;
+}
+
+@media (max-width: 480px) {
+  aside {
+    display: none;
+    position: fixed;
+    height: 100vh;
+    background-color: #d9d9d9;
+    padding: 10px;
+    width: 50%;
+    z-index: 999;
+    overflow-y: scroll;
+  }
+  #filterBtn {
+    border-radius: 5px;
+    border: none;
+    width: 67px;
+    height: 31px;
+    margin-top: 2px;
+    color: #fff;
+    font-size: 20px;
+    background-color: #002f496b;
+  }
+  #searchbtn {
+    border-radius: 5px;
+    border: none;
+    width: 66px;
+    height: 31px;
+    color: #fff;
+    font-size: 20px;
+    background-color: #002f496b;
+  }
+  #search-input {
+    width: 180px !important;
+    height: 34px !important;
+  }
+  .main-sec {
+    margin-left: 0px !important;
+  }
+  .mar-left {
+    margin-right: -197px;
+    width: 37%;
+  }
 }

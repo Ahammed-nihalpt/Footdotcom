@@ -63,10 +63,48 @@ label.radio input:checked + span {
   margin-right: 10px;
 }
 
-.blue{
+.blue {
   background-color: #003049;
 }
 
-.white{
+.white {
   background-color: #fff;
+}
+
+.re-btn {
+  background-color: #003049 !important;
+  color: #fff !important;
+}
+
+.add-btn {
+  background-color: #fff !important;
+  color: #003049 !important;
+  border: 1px solid #003049 !important;
+}
+
+figure.zoom {
+  background-position: 50% 50%;
+  position: relative;
+  width: 450px;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+figure.zoom img:hover {
+  opacity: 0;
+}
+figure.zoom img {
+  transition: opacity 0.5s;
+  display: block;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  figure.zoom {
+    background-position: 50% 50%;
+    position: relative;
+    overflow: hidden;
+    cursor: zoom-in;
+    width: 233px;
+    height: 199px;
+  }
 }

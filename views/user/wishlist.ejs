@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/cart.css" type="text/css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>cart</title>
+  </head>
+  <body class="blue">
+    <%- include('../partials/userPartials/homeHeader.ejs') %>
+    <section class="mt-5 d-flex justify-content-center">
+      <div class="w-100 d-flex justify-content-center">
+        <div class="row gap-3 justify-content-center" style="width: 70%">
+          <div class="white p-3 col-md-12 col-12" style="border-radius: 5px">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="me-5"><h3>Wishlist</h3></div>
+              <a href="/user/home" class="textblue">
+                <div class="d-flex justify-content-center">
+                  <h6>&larr; Continue Shopping</h6>
+                </div>
+              </a>
+            </div>
+            <div class="table-responsive">
+              <table
+                class="table table-striped"
+                style="text-align: center; vertical-align: middle"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Item</th>
+                    <th scope="col">Title</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if ( wishlistData.length === 0) { %>
+                  <tr>
+                    <th colspan="6" class="">
+                      Your wishlist is empty!!!
+                      <a href="/user/home" class="textblue"
+                        >Continue Shopping</a
+                      >
+                    </th>
+                  </tr>
+                  <% } %> <% wishlistData.forEach(data => { %>
+                  <tr>
+                    <td>
+                      <a href="/user/home/<%= data.productDetail._id %>">
+                        <img
+                          src="/images/<%= data.productDetail.product_img %>"
+                          style="width: 70px; height: 70px"
+                          alt=""
+                        />
+                      </a>
+                    </td>
+                    <td>
+                      <dl>
+                        <dt><%= data.productDetail.product_name %></dt>
+                        <dd class="color">
+                          Color: <%= data.productDetail.color %>
+                        </dd>
+                      </dl>
+                    </td>
+                    <td>
+                      <div
+                        class="d-flex flex-column flex-md-row justify-content-md-center"
+                      >
+                        <a
+                          href="/user/home/<%= data.productDetail._id %>"
+                          class="btn btn-success btn-sm"
+                        >
+                          <div
+                            class="d-flex justify-content-center align-items-center mt-1"
+                          >
+                            View Product
+                          </div>
+                        </a>
+                        <button
+                          class="btn btn-danger btn-sm"
+                          onclick="deleteWishlistItem('<%= data.productDetail._id %>','<%=data._id%>')"
+                        >
+                          <i class="material-symbols-outlined"> delete </i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <style>
+      .blue {
+        background-color: #003049;
+      }
+      .white {
+        background-color: #d9d9d9;
+      }
+      .textblue {
+        color: #003049;
+        text-decoration: none;
+      }
+    </style>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+      function deleteWishlistItem(pid, wid) {
+        $.ajax({
+          url: "/remove-wishlist-product",
+          data: {
+            pid,
+            wid,
+          },
+          method: "post",
+          success: () => {
+            location.reload();
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

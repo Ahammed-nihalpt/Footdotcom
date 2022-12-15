@@ -228,6 +228,27 @@ const OTPSchema = new Schema({
     },
 });
 
+const wishlistSchema = new Schema(
+    {
+        userId: {
+            type: String,
+            required: true,
+        },
+        product: [
+            {
+                productId: {
+                    type: ObjectId,
+                    required: true,
+                },
+            },
+        ],
+    },
+    {
+        timestamps: true,
+    },
+);
+
+const Wishlist = mongoose.model('wishlist', wishlistSchema);
 const Users = mongoose.model('User', userSchema);
 const Address = mongoose.model('Address', addressSchema);
 const Admin = mongoose.model('admin', adminSchema);
@@ -248,4 +269,5 @@ module.exports = {
     Order,
     SubCategory,
     OTP,
+    Wishlist,
 };

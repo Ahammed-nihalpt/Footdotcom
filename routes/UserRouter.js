@@ -30,6 +30,10 @@ router.get('/order-success/:oid', middleware.userSession, controller.orderSucces
 router.get('/paymentFail', middleware.userSession, controller.paymentFailure);
 router.post('/verifyPayment', middleware.userSession, controller.verifyPayment);
 
+// Wishlist
+router.get('/user/wishlist', controller.wishlistRender);
+router.post('/addtowishlist', controller.addToWishlist);
+router.post('/remove-wishlist-product', controller.removeWishlistProduct);
 // order history
 router.get('/user/order-history', middleware.userSession, controller.orderHistoryRender);
 
