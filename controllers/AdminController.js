@@ -3,7 +3,6 @@
 /* eslint-disable indent */
 const fs = require('fs');
 const moment = require('moment');
-// const uuid = require('uuid');
 const model = require('../models/UsersModel');
 
 const adminRender = async (req, res) => {
@@ -463,9 +462,8 @@ const changeOrderStatus = (req, res) => {
         {
             paymentStatus, orderStatus,
         },
-    ).then((result) => {
-        console.log(result);
-        res.send('helo');
+    ).then(() => {
+        res.send('success');
     }).catch((e) => {
         console.log(e);
     });

@@ -8,12 +8,14 @@ const fs = require('fs');
 const sessions = require('express-session');
 const cookieParser = require('cookie-parser');
 const fileupload = require('express-fileupload');
+const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 const app = express();
+dotenv.config();
 
 mongoose.connect(
-    'mongodb://localhost:27017/FootDotCom',
+    process.env.MONGO_URL,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -58,6 +60,10 @@ app.use('/', userRoute);
 app.use('/signup', signupRoute);
 app.use('/login', loginRoute);
 app.use('/admin', adminRoute);
+
+app.use((req, res) => {
+    res.status(404).render('404');
+});
 
 app.listen(7000, () => {
     console.log('server running on port 7000');

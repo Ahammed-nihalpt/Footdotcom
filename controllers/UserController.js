@@ -26,84 +26,146 @@ const homeGender = async (req, res) => {
     } else if (req.params.gender === 'kids') {
         id = mongoose.Types.ObjectId('6396efa4f3aea571db60f1e2');
     }
+    const pageNum = req.query.page;
+    const perPage = 8;
     let count = 0;
     const category = await model.Category.find();
     const scategory = await model.SubCategory.find();
-    model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: id } }] }).then((result) => {
-        model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
-            if (doc) {
-                count = doc.products.length;
-            }
-            res.render('user/UserHome', {
-                allData: result, count, name: req.session.userName, category, scategory,
+    const docCount = await model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: id } }] })
+        .countDocuments();
+    model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: id } }] })
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
+        .then((result) => {
+            model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
+                if (doc) {
+                    count = doc.products.length;
+                }
+                res.render('user/UserHome', {
+                    allData: result,
+                    count,
+                    name: req.session.userName,
+                    category,
+                    scategory,
+                    currentPage: pageNum,
+                    totalDocuments: docCount,
+                    pages: Math.ceil(docCount / perPage),
+                });
             });
+        })
+        .catch((error) => {
+            console.log(error);
         });
-    }).catch((error) => {
-        console.log(error);
-    });
 };
 
 const userHomeRender = async (req, res) => {
+    const pageNum = req.query.page;
+    const perPage = 8;
     let count = 0;
     const category = await model.Category.find();
     const scategory = await model.SubCategory.find();
-    model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }] }).then((result) => {
-        model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
-            if (doc) {
-                count = doc.products.length;
-            }
-            res.render('user/UserHome', {
-                allData: result, count, name: req.session.userName, category, scategory,
+    const docCount = await model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }] })
+        .countDocuments();
+    model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }] })
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
+        .then((result) => {
+            model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
+                if (doc) {
+                    count = doc.products.length;
+                }
+                res.render('user/UserHome', {
+                    allData: result,
+                    count,
+                    name: req.session.userName,
+                    category,
+                    scategory,
+                    currentPage: pageNum,
+                    totalDocuments: docCount,
+                    pages: Math.ceil(docCount / perPage),
+                });
             });
+        })
+        .catch((error) => {
+            console.log(error);
         });
-    }).catch((error) => {
-        console.log(error);
-    });
 };
 
 const search = async (req, res) => {
+    const pageNum = req.query.page;
+    const perPage = 8;
     let count = 0;
+    const searchvalue = req.body.searchinput;
     const category = await model.Category.find();
     const scategory = await model.SubCategory.find();
-    console.log(req.body);
-    const searchvalue = req.body.searchinput;
+    const docCount = await model.Product.find({
+        $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, {
+            product_name: new RegExp(searchvalue, 'i'),
+        }],
+    })
+        .countDocuments();
     model.Product.find({
         $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, {
             product_name: new RegExp(searchvalue, 'i'),
         }],
-    }).then((result) => {
-        model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
-            if (doc) {
-                count = doc.products.length;
-            }
-            res.render('user/UserHome', {
-                allData: result, count, name: req.session.userName, category, scategory,
+    })
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
+        .then((result) => {
+            model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
+                if (doc) {
+                    count = doc.products.length;
+                }
+                res.render('user/UserHome', {
+                    allData: result,
+                    count,
+                    name: req.session.userName,
+                    category,
+                    scategory,
+                    currentPage: pageNum,
+                    totalDocuments: docCount,
+                    pages: Math.ceil(docCount / perPage),
+                });
             });
+        })
+        .catch((error) => {
+            console.log(error);
         });
-    }).catch((error) => {
-        console.log(error);
-    });
     // const result = await model.Product.find({
     //     product_name: new RegExp(searchvalue, 'i'),
     // });
 };
 
 const homeFilter = async (req, res) => {
-    console.log(Object.keys(req.body).length);
+    // console.log(Object.keys(req.body).length);
+    const pageNum = req.query.page;
+    const perPage = 8;
     let count = 0;
     const category = await model.Category.find();
     const scategory = await model.SubCategory.find();
+    const docCount = await model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }] })
+        .countDocuments();
     if (Object.keys(req.body).length === 0) {
         console.log('hello');
         model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }] }).then((result) => {
-            model.Cart.findOne({ user_id: req.session.userID }).then((doc) => {
-                if (doc) {
-                    count = doc.products.length;
-                }
-                res.render('user/UserHome', {
-                    allData: result, count, name: req.session.userName, category, scategory,
+            model.Cart.findOne({ user_id: req.session.userID })
+                .skip((pageNum - 1) * perPage)
+                .limit(perPage)
+                .then((doc) => {
+                    if (doc) {
+                        count = doc.products.length;
+                    }
+                    res.render('user/UserHome', {
+                        allData: result,
+                        count,
+                        name: req.session.userName,
+                        category,
+                        scategory,
+                        currentPage: pageNum,
+                        totalDocuments: docCount,
+                        pages: Math.ceil(docCount / perPage),
+                    });
                 });
-            });
         }).catch((error) => {
             console.log(error);
         });
@@ -115,10 +177,19 @@ const homeFilter = async (req, res) => {
             if (key) { arr.push(mongoose.Types.ObjectId(all[key])); }
         }
         console.log(arr);
+        const docCountt = await model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: arr } }] })
+            .countDocuments();
         const result = await model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: arr } }] });
         console.log(result);
         res.render('user/UserHome', {
-            allData: result, count, name: req.session.userName, category, scategory,
+            allData: result,
+            count,
+            name: req.session.userName,
+            category,
+            scategory,
+            currentPage: pageNum,
+            totalDocuments: docCountt,
+            pages: Math.ceil(docCountt / perPage),
         });
     }
 };
@@ -535,7 +606,7 @@ const orderSuccessRender = (req, res) => {
             },
         },
     ]).then((result) => {
-        console.log(result);
+        // console.log(result);
         res.render('user/orderSuccess', {
             id: result[0].order_id,
             amount: result[0].totalAmount,
@@ -590,7 +661,6 @@ const orderHistoryRender = (req, res) => {
             },
         },
     ]).then((result) => {
-        console.log(result);
         // eslint-disable-next-line no-underscore-dangle
         model.Order.find({ user_id: 'aa8e7f6f-6176-41f1-8677-4cb23efea371' }).then((doc) => {
             // const items = doc.products.length;

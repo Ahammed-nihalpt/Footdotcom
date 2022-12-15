@@ -5,11 +5,12 @@
 /* eslint-disable no-console */
 let message = '';
 // let otpver = 0;
-const client = require('twilio')('AC07a1dceecd2e171cd1f738dce7f9098a', '289c7d4874a474d43994933820e9bcd0');
+const client = require('twilio')(process.env.TWILIO_ACCOUNTSID, process.env.TWILIO_TOKEN);
 const uuid = require('uuid');
 const model = require('../models/UsersModel');
 
 const signupRender = (req, res) => {
+    console.log(process.env.TWILIO_ACCOUNTSID);
     res.render('Signup', { message });
     message = '';
 };

@@ -42,7 +42,7 @@
         <div class="col-md-3">
           <form action="/user/home" method="post">
           <div class="d-flex">
-              <input type="text" class="form-control" name="searchinput" id="search-input"/>
+              <input type="text" class="form-control me-2" placeholder="Search" name="searchinput" id="search-input"/>
               <button type="submit" id="searchbtn">search</button>
           </div>
         </form>
@@ -64,7 +64,22 @@
               </div>
             </a>
         <%})%>
-      </div>
+        <% if (pages>1) { %>
+          <div class="d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <% for( let i = 1; i <= pages; i++ ) { %>
+                  <% if (i == currentPage) { %>
+                    <li class="page-item active"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
+                    <% } else {%>
+                  <li class="page-item"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
+                  <% } %> 
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <% } %>
     </section>
     <!-- bootstrap javascript -->
     <script
