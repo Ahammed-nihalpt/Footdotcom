@@ -7,6 +7,7 @@ const router = express.Router();
 
 // landingpage
 router.get('/', controller.landingPageRender);
+router.get('/product/:id', controller.guestProduct);
 
 // homePage
 router.get('/user/home', middleware.userSession, controller.userHomeRender);
@@ -31,9 +32,10 @@ router.get('/paymentFail', middleware.userSession, controller.paymentFailure);
 router.post('/verifyPayment', middleware.userSession, controller.verifyPayment);
 
 // Wishlist
-router.get('/user/wishlist', controller.wishlistRender);
-router.post('/addtowishlist', controller.addToWishlist);
-router.post('/remove-wishlist-product', controller.removeWishlistProduct);
+router.get('/user/wishlist', middleware.userSession, controller.wishlistRender);
+router.post('/addtowishlist', middleware.userSession, controller.addToWishlist);
+router.post('/remove-wishlist-product', middleware.userSession, controller.removeWishlistProduct);
+
 // order history
 router.get('/user/order-history', middleware.userSession, controller.orderHistoryRender);
 

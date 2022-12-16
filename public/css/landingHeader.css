@@ -1,0 +1,26 @@
+.site-name {
+  font-size: 1.5rem;
+  font-weight: bolder;
+}
+
+.nonlink {
+  text-decoration: none;
+  color: #000000;
+}
+
+.nonlink:hover {
+  color: #000000;
+}
+
+.cart-icon i {
+  font-size: 25px;
+}
+
+.mar-left {
+  margin-right: -360px;
+  width: 50%;
+}
+
+.mar {
+  margin-left: 5px;
+}

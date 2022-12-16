@@ -16,6 +16,29 @@ const landingPageRender = async (req, res) => {
     }
 };
 
+const guestProduct = async (req, res) => {
+    const id = mongoose.Types.ObjectId(req.params.id);
+    model.Product.aggregate([
+        { $match: { _id: id } },
+        {
+            $lookup: {
+                from: 'subcategories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'product',
+            },
+        },
+    ]).then((result) => {
+        model.Category.find().then((cate) => {
+            res.render('user/guestProductView', {
+                allData: result,
+                name: req.session.userName,
+                cate,
+            });
+        });
+    });
+};
+
 const homeGender = async (req, res) => {
     let id;
     console.log(req.params);
@@ -930,4 +953,5 @@ module.exports = {
     wishlistRender,
     addToWishlist,
     removeWishlistProduct,
+    guestProduct,
 };
