@@ -6,6 +6,7 @@ const path = require('path');
 // eslint-disable-next-line no-unused-vars
 const fs = require('fs');
 const sessions = require('express-session');
+const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const fileupload = require('express-fileupload');
 const dotenv = require('dotenv');
@@ -32,7 +33,7 @@ app.use(
     sessions({
         secret: 'secKey98214#29o3',
         saveUninitialized: true,
-        resave: false,
+        resave: true,
     }),
 );
 app.use(cookieParser());
@@ -42,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('views'));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
+app.use(flash());
 
 app.use((req, res, next) => {
     res.set(

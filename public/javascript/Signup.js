@@ -20,6 +20,7 @@ const ConfirmPassword = document.getElementById('conPassword');
 form.addEventListener('submit', (event) => {
     let flag = 0;
     const namevalue = Name.value.trim();
+    console.log(namevalue.trim());
     const usernamevalue = Userame.value.trim();
     const addressvalue = Address.value.trim();
     const statevalue = State.value.trim();
@@ -177,7 +178,7 @@ function setSuccess(element, id) {
 }
 
 function onlyLetters(str) {
-    return /^[a-zA-Z]+$/.test(str);
+    return /^[a-zA-Z\s]*$/.test(str);
 }
 
 function addressPat(str) {

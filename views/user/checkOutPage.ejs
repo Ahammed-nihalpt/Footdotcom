@@ -14,11 +14,8 @@
     <title>Check  Out</title>
   </head>
   <body class="blue">
-    <!-- <%- include('../partials/userPartials/homeHeader.ejs') %> -->
     <section class="mt-5">
       <div class="container">
-        <!-- <div class="d-flex"> -->
-          <!-- <form action="/order-confirmed" method="post"> -->
           <form id="checkout">
             <div class="row">
               <div class="order col-md-6 mt-3">
@@ -31,28 +28,34 @@
                   <% allData.forEach(element => { %>
                   <div>&emsp; <%= element.productDetail.product_name %>  &emsp; Qty: <%= element.productQuantity %>  <label for="">x Rs.<%= element.productDetail.price %></label>&emsp; Price: Rs. <%= element.productPrice %></div> 
                   <% }) %>
-                  <!-- <div>&emsp; white Shoes &emsp; Qty: 1 <label for="">x Rs.999</label>&emsp;Price: Rs.999</div> -->
                   <hr>
                   &emsp; <b>Total: &emsp; &emsp; &emsp;&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Rs.<%= sum %> </b>  
                 </div>
               </div>
               <div class="shipadrss col-md-6 mt-3">
                 <h5 class="white">Shipping Address:</h5>
-                <% address.forEach(data => { %>
+                <% for( let i = 0; i < address.length; i++ ) { %>
                   <div
                   style="border: 1px solid"
                   class="p-4 d-flex align-content-center align-items-center d9"
                 >
-                  <input type="radio" value="<%= data._id %>" name="address"/>
+                  <input
+                  type="radio" 
+                  value="<%= address[i]._id %>"
+                  <% if (i == 0) { %>
+                   checked
+                  <% } %>
+                  name="address"
+                  />
                   <p class="ms-3">
                     <b><%= name %> </b><br />
-                    <%= data.address %> <br>
-                    <%= data.state %>,
-                    <%= data.city %> <br>
-                    <%= data.pincode %> 
+                    <%= address[i].address %> <br>
+                    <%= address[i].state %>,
+                    <%= address[i].city %> <br>
+                    <%= address[i].pincode %> 
                   </p>
                 </div>
-                <% }) %>
+                <% } %>
                 <% if (address.length == 1) { %>
                   <div
                   style="border: 1px solid"

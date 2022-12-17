@@ -3,16 +3,16 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable indent */
 /* eslint-disable no-console */
-let message = '';
-// let otpver = 0;
 const client = require('twilio')(process.env.TWILIO_ACCOUNTSID, process.env.TWILIO_TOKEN);
 const uuid = require('uuid');
 const model = require('../models/UsersModel');
 
 const signupRender = (req, res) => {
-    console.log(process.env.TWILIO_ACCOUNTSID);
-    res.render('Signup', { message });
-    message = '';
+    try {
+        res.render('Signup', { message: req.flash('message') });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const otpRender = (req, res) => {
@@ -20,110 +20,116 @@ const otpRender = (req, res) => {
 };
 
 const otpPost = async (req, res) => {
-    const phone = req.body.phone;
-    const otpdata = await model.OTP.findOne({ otp_id: phone });
-    const otpver = otpdata.otp;
-    if (otpver === Number(req.body.otp)) {
-        // eslint-disable-next-line prefer-destructuring
-        const Users = model.Users;
-        const Address = model.Address;
-        const name = req.body.name;
-        const username = req.body.Username;
-        const address = req.body.address;
-        const state = req.body.state;
-        const city = req.body.city;
-        const pincode = req.body.pincode;
-        const email = req.body.email.trim();
-        const password = req.body.password;
-        const uid = uuid.v4();
-        const user = new Users({
-            user_id: uid,
-            name,
-            username,
-            email,
-            phone,
-            password,
-            account_type: 'user',
-            user_status: 'active',
-        });
-        user.save().then((result) => {
-            const addressobj = new Address({
-                // eslint-disable-next-line no-underscore-dangle
-                user_id: result.user_id,
-                address,
-                state,
-                city,
-                pincode,
+    try {
+        const phone = req.body.phone;
+        const otpdata = await model.OTP.findOne({ otp_id: phone });
+        const otpver = otpdata.otp;
+        // eslint-disable-next-line eqeqeq
+        if (otpver == Number(req.body.otp)) {
+            // eslint-disable-next-line prefer-destructuring
+            const Users = model.Users;
+            const Address = model.Address;
+            const name = req.body.name;
+            const username = req.body.Username;
+            const address = req.body.address;
+            const state = req.body.state;
+            const city = req.body.city;
+            const pincode = req.body.pincode;
+            const email = req.body.email.trim();
+            const password = req.body.password;
+            const uid = uuid.v4();
+            const user = new Users({
+                user_id: uid,
+                name,
+                username,
+                email,
+                phone,
+                password,
+                account_type: 'user',
+                user_status: 'active',
             });
-            addressobj.save().then((results) => {
-                if (results) {
-                    model.OTP.findOneAndDelete({ otp_id: phone }).then(() => {
-                        res.render('success');
-                    });
-                } else {
-                    console.log('error inserting addess');
-                }
-            }).catch((error) => {
-                console.log(error);
+            user.save().then((result) => {
+                const addressobj = new Address({
+                    // eslint-disable-next-line no-underscore-dangle
+                    user_id: result.user_id,
+                    address,
+                    state,
+                    city,
+                    pincode,
+                });
+                addressobj.save().then((results) => {
+                    if (results) {
+                        model.OTP.findOneAndDelete({ otp_id: phone }).then(() => {
+                            res.render('success');
+                        });
+                    }
+                }).catch(() => {
+                    res.redirect('/500');
+                });
+            }).catch(() => {
+                res.redirect('/500');
             });
-        }).catch((error) => {
-            console.log(error);
-        });
-    } else {
-        message = 'invalid OTP';
-        res.redirect('/signup');
+        } else {
+            model.OTP.findOneAndDelete({ otp_id: phone }).then(() => {
+                req.flash('message', ['invalid OTP']);
+                res.redirect('/signup');
+            });
+        }
+    } catch (error) {
+        res.redirect('/500');
     }
 };
 
 const signupPost = async (req, res) => {
-    const data = { ...req.body };
-    const email = data.email;
-    const phone = Number(data.phone);
-    // eslint-disable-next-line no-unused-vars, object-shorthand
-    const alredyCheck = model.Users.find({ $or: [{ email: email }, { phone: phone }] })
-        .then((result) => {
-            if (result[0]) {
-                message = 'Already registered email or phone';
-                res.redirect('/signup');
-            } else {
-                // eslint-disable-next-line no-unused-vars
-                const usernameCheck = model.Users.find({ username: data.Username })
-                    .then((results) => {
-                        if (results[0]) {
-                            message = 'Username unavailable';
-                            res.redirect('/signup');
-                            message = '';
-                        } else {
-                            const otpver = Math.floor(100000 + Math.random() * 900000);
-                            const OTP = model.OTP;
-                            const otp = new OTP({
-                                otp: otpver,
-                                otp_id: data.phone,
-                            });
-                            otp.save().then(() => {
-                                const tonumber = `+91${data.phone}`;
-                                sendOTP(tonumber, otpver);
-                                res.render('otp', { data });
-                            });
-                        }
-                    });
-            }
-        }).catch((error) => {
-            console.log(error);
-        });
+    try {
+        const data = { ...req.body };
+        const email = data.email;
+        const phone = Number(data.phone);
+        // eslint-disable-next-line no-unused-vars, object-shorthand
+        const alredyCheck = model.Users.find({ $or: [{ email: email }, { phone: phone }] })
+            .then((result) => {
+                if (result[0]) {
+                    req.flash('message', ['Already registered email or phone']);
+                    res.redirect('/signup');
+                } else {
+                    // eslint-disable-next-line no-unused-vars
+                    const usernameCheck = model.Users.find({ username: data.Username })
+                        .then((results) => {
+                            if (results[0]) {
+                                req.flash('message', ['Username unavailable']);
+                                res.redirect('/signup');
+                            } else {
+                                const otpver = Math.floor(100000 + Math.random() * 900000);
+                                const OTP = model.OTP;
+                                const otp = new OTP({
+                                    otp: otpver,
+                                    otp_id: data.phone,
+                                });
+                                otp.save().then(() => {
+                                    const tonumber = `+91${data.phone}`;
+                                    client.messages
+                                        .create({
+                                            to: tonumber,
+                                            from: '+19403604865',
+                                            body: `your otp is: ${otpver}`,
+                                        }).then(() => {
+                                            res.render('otp', { data });
+                                        }).catch(() => {
+                                            req.flash('message', ['The phone number is not registered in twilio']);
+                                            res.redirect('/signup');
+                                        });
+                                });
+                            }
+                        });
+                }
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
-// eslint-disable-next-line no-unused-vars
-function sendOTP(number, otp) {
-    client.messages
-        .create({
-            to: number,
-            from: '+19403604865',
-            body: `your otp is: ${otp}`,
-        })
-        .then((messages) => console.log(`Message SID ${messages.sid}`))
-        .catch((error) => console.error(error));
-}
 module.exports = {
     signupRender,
     otpRender,

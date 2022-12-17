@@ -248,6 +248,22 @@ const wishlistSchema = new Schema(
     },
 );
 
+const bannerSchema = new Schema(
+    {
+        image: {
+            type: String,
+            required: true,
+        },
+        name: {
+            type: String,
+            required: true,
+        },
+    },
+    {
+        timestamps: true,
+    },
+);
+
 const Wishlist = mongoose.model('wishlist', wishlistSchema);
 const Users = mongoose.model('User', userSchema);
 const Address = mongoose.model('Address', addressSchema);
@@ -258,6 +274,7 @@ const Category = mongoose.model('category', CategorySchema);
 const SubCategory = mongoose.model('subcategory', SubCategorySchema);
 const Cart = mongoose.model('cart', cartSchema);
 const Order = mongoose.model('order', orderSchema);
+const Banner = mongoose.model('banner', bannerSchema);
 
 module.exports = {
     Users,
@@ -270,4 +287,5 @@ module.exports = {
     SubCategory,
     OTP,
     Wishlist,
+    Banner,
 };

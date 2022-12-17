@@ -43,7 +43,13 @@ router.post('/order-completed', middleware.adminSession, controller.orderCompele
 router.post('/order-cancel', middleware.adminSession, controller.orderCancel);
 
 // sales report
-router.get('/home/salesreport', middleware.adminSession, controller.salesReportRender);
+router.get('/home/salesreport', controller.salesReportRender);
 router.post('/salesreport/customdate', middleware.adminSession, controller.salesCustomDate);
+
+// Banner
+router.get('/home/banner', controller.bannerRender);
+router.get('/home/banner/add', controller.addBannerRender);
+router.post('/home/banner/add', controller.addBannerPost);
+router.get('/home/banner/delete/:id', controller.deleteBanner);
 
 module.exports = router;

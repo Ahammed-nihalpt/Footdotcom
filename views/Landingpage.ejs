@@ -28,20 +28,15 @@
           data-bs-ride="carousel"
         >
           <div class="carousel-inner">
+            <% banner.forEach(element => { %>
             <div class="carousel-item active" data-bs-interval="10000">
               <img
-                src="/images/homepageImg/New-season-banner.webp"
+                src="/images/<%= element.image %>"
                 class="d-block w-100"
-                alt="..."
+                alt="<%= element.name %>"
               />
             </div>
-            <div class="carousel-item" data-bs-interval="2000">
-              <img
-                src="/images/homepageImg/offrt.webp"
-                class="d-block w-100"
-                alt="..."
-              />
-            </div>
+            <% }) %>
             <button
               class="carousel-control-prev"
               type="button"

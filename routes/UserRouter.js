@@ -55,5 +55,7 @@ router.post('/user/change-password', middleware.userSession, controller.changePa
 
 // 404
 router.get('/404', controller.notFound);
+// 500
+router.get('/500', controller.error);
 
 module.exports = router;

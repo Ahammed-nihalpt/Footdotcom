@@ -37,279 +37,315 @@ const adminRender = async (req, res) => {
             online,
         });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500');
     }
 };
 
 const adminProductsRender = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
-    const findProducts = model.Product.aggregate([
-        {
-            $lookup: {
-                from: 'subcategories',
-                localField: 'category',
-                foreignField: '_id',
-                as: 'product',
+    try {
+        // eslint-disable-next-line no-unused-vars
+        const findProducts = model.Product.aggregate([
+            {
+                $lookup: {
+                    from: 'subcategories',
+                    localField: 'category',
+                    foreignField: '_id',
+                    as: 'product',
+                },
             },
-        },
-    ])
-        .then((rsult) => {
-            // console.log(rsult);
-            model.Category.find().then((doc) => {
-                res.render('admin/adminProducts', { allData: rsult, category: doc });
+        ])
+            .then((rsult) => {
+                model.Category.find().then((doc) => {
+                    res.render('admin/adminProducts', { allData: rsult, category: doc });
+                });
+            }).catch(() => {
+                res.redirect('/500');
             });
-            // res.render('admin/adminAddProducts');
-        }).catch((error) => {
-            console.log(error);
-        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const adminUsersRender = (req, res) => {
-    model.Users.find({ account_type: 'user' })
-        .then((result) => {
-            res.render('admin/adminUsers', { allData: result });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+    try {
+        model.Users.find({ account_type: 'user' })
+            .then((result) => {
+                res.render('admin/adminUsers', { allData: result });
+            })
+            .catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const adminUnblockUser = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
-    const blockUser = model.Users.findByIdAndUpdate({ _id: req.params.id }, { user_status: 'active' })
-        .then(() => {
-            // console.log(result);
-            res.redirect('/admin/home/users');
-        }).catch((err) => {
-            console.log(err);
-        });
+    try {
+        // eslint-disable-next-line no-unused-vars
+        const blockUser = model.Users.findByIdAndUpdate({ _id: req.params.id }, { user_status: 'active' })
+            .then(() => {
+                res.redirect('/admin/home/users');
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const adminBlockUser = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
-    const blockUser = model.Users.findByIdAndUpdate({ _id: req.params.id }, { user_status: 'blocked' })
-        .then(() => {
-            // console.log(result);
-            res.redirect('/admin/home/users');
-        }).catch((err) => {
-            console.log(err);
-        });
+    try {
+        // eslint-disable-next-line no-unused-vars
+        const blockUser = model.Users.findByIdAndUpdate({ _id: req.params.id }, { user_status: 'blocked' })
+            .then(() => {
+                res.redirect('/admin/home/users');
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const adminDeleteUser = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
-    const deleteUser = model.Users.findByIdAndDelete({ _id: req.params.id }).then((result) => {
-        // console.log(result);
+    try {
         // eslint-disable-next-line no-unused-vars
-        const deleteUserAdd = model.Address.findOneAndDelete({ user_id: req.params.id })
+        const deleteUser = model.Users.findByIdAndDelete({ _id: req.params.id }).then((result) => {
             // eslint-disable-next-line no-unused-vars
-            .then((results) => {
-                console.log(result);
-                res.redirect('/admin/home/users');
-            }).catch((err) => {
-                console.log(err);
-            });
-    }).catch((error) => {
-        console.log(error);
-    });
+            const deleteUserAdd = model.Address.findOneAndDelete({ user_id: req.params.id })
+                // eslint-disable-next-line no-unused-vars
+                .then((results) => {
+                    res.redirect('/admin/home/users');
+                }).catch(() => {
+                    res.redirect('/500');
+                });
+        }).catch(() => {
+            res.redirect('/500');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const adminAddProductRender = (req, res) => {
-    model.SubCategory.aggregate([
-        {
-            $lookup: {
-                from: 'categories',
-                localField: 'category_id',
-                foreignField: '_id',
-                as: 'cate',
+    try {
+        model.SubCategory.aggregate([
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'category_id',
+                    foreignField: '_id',
+                    as: 'cate',
+                },
             },
-        },
-        { $unwind: '$cate' },
-    ]).then((docs) => {
-        console.log(docs);
-        model.Category.find().then((result) => {
-            console.log(result);
-            res.render('admin/adminAddProducts', { sub: docs, main: result });
+            { $unwind: '$cate' },
+        ]).then((docs) => {
+            model.Category.find().then((result) => {
+                res.render('admin/adminAddProducts', { sub: docs, main: result });
+            });
+        }).catch(() => {
+            res.redirect('/500');
         });
-    }).catch((e) => {
-        console.log(e);
-    });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const adminAddProductpost = async (req, res) => {
-    const image = req.files.prodcutImage;
-    // eslint-disable-next-line prefer-destructuring
-    const Product = model.Product;
-    // eslint-disable-next-line prefer-destructuring
-    const {
-        prodcutName,
-        price,
-        stock,
-        color,
-        size,
-        brand,
-        ...cate
-    } = req.body;
-    const categories = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key in cate) {
-        if (key) { categories.push(cate[key]); }
-    }
-    // eslint-disable-next-line comma-dangle, prefer-template, no-unused-vars
-    const fileName = Date.now() + '.jpg';
-    // eslint-disable-next-line prefer-template, no-unused-vars
-    await image.mv('./public/images/' + fileName, (err, done) => {
-        if (!err) {
-            const product = new Product({
-                product_img: fileName,
-                product_name: prodcutName,
-                // eslint-disable-next-line camelcase
-                price,
-                stock,
-                // eslint-disable-next-line no-underscore-dangle
-                category: categories,
-                brand,
-                color,
-                size,
-                product_status: 'active',
-            });
-            product.save().then((result) => {
-                console.log(result);
-            }).catch((error) => {
-                console.log(error);
-            });
-            res.redirect('/admin/home/products');
-        } else {
-            console.log(err);
+    try {
+        const image = req.files.prodcutImage;
+        // eslint-disable-next-line prefer-destructuring
+        const Product = model.Product;
+        // eslint-disable-next-line prefer-destructuring
+        const {
+            prodcutName,
+            price,
+            stock,
+            color,
+            size,
+            brand,
+            ...cate
+        } = req.body;
+        const categories = [];
+        // eslint-disable-next-line no-restricted-syntax
+        for (const key in cate) {
+            if (key) { categories.push(cate[key]); }
         }
-    });
+        // eslint-disable-next-line comma-dangle, prefer-template, no-unused-vars
+        const fileName = Date.now() + '.jpg';
+        // eslint-disable-next-line prefer-template, no-unused-vars
+        await image.mv('./public/images/' + fileName, (err, done) => {
+            if (!err) {
+                const product = new Product({
+                    product_img: fileName,
+                    product_name: prodcutName,
+                    // eslint-disable-next-line camelcase
+                    price,
+                    stock,
+                    // eslint-disable-next-line no-underscore-dangle
+                    category: categories,
+                    brand,
+                    color,
+                    size,
+                    product_status: 'active',
+                });
+                product.save().then(() => {
+                }).catch(() => {
+                    res.redirect('/500');
+                });
+                res.redirect('/admin/home/products');
+            } else {
+                res.redirect('/500');
+            }
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const productActivate = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
-    const activateProduct = model.Product.findByIdAndUpdate({ _id: req.params.id }, { product_status: 'active' })
-        .then((result) => {
-            console.log(result);
-            res.redirect('/admin/home/products');
-        }).catch((err) => {
-            console.log(err);
-        });
+    try {
+        // eslint-disable-next-line no-unused-vars
+        const activateProduct = model.Product.findByIdAndUpdate({ _id: req.params.id }, { product_status: 'active' })
+            .then(() => {
+                res.redirect('/admin/home/products');
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const productDeactivate = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
-    const deactivateProduct = model.Product.findByIdAndUpdate({ _id: req.params.id }, { product_status: 'deactivated' })
-        .then((result) => {
-            console.log(result);
-            res.redirect('/admin/home/products');
-        }).catch((err) => {
-            console.log(err);
-        });
+    try {
+        model.Product.findByIdAndUpdate({ _id: req.params.id }, { product_status: 'deactivated' })
+            .then(() => {
+                res.redirect('/admin/home/products');
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const addSize = async (req, res) => {
-    console.log(req.body);
-    const { size, product } = req.body;
-    await model.Product.findByIdAndUpdate({ _id: product }, { $push: { size } });
-    res.send('success');
+    try {
+        const { size, product } = req.body;
+        await model.Product.findByIdAndUpdate({ _id: product }, { $push: { size } });
+        res.send('success');
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const productDelete = (req, res) => {
-    // console.log(req.params.id);
-    // eslint-disable-next-line no-unused-vars
-    // eslint-disable-next-line no-unused-vars
-    const deleteproduct = model.Product.findOneAndDelete({ _id: req.params.id })
-        // eslint-disable-next-line no-unused-vars
-        .then((result) => {
-            const filePath = `./public/images/${req.params.img}`;
-            fs.unlink(filePath, (err) => {
-                if (err) throw err;
-                console.log('path/file.txt was deleted');
+    try {
+        model.Product.findOneAndDelete({ _id: req.params.id })
+            .then(() => {
+                const filePath = `./public/images/${req.params.img}`;
+                fs.unlink(filePath, (err) => {
+                    if (err) throw err;
+                });
+                res.redirect('/admin/home/products');
+            }).catch(() => {
+                res.redirect('/500');
             });
-            res.redirect('/admin/home/products');
-        }).catch((err) => {
-            console.log(err);
-        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const productEdit = (req, res) => {
-    const { id } = req.params;
-    model.Product.findOne({ _id: id }).then((doc) => {
-        model.SubCategory.find().then((docs) => {
-            console.log(docs);
-            model.Category.find().then((result) => {
-                console.log(result);
-                res.render('admin/productEdit', { doc, main: result, sub: docs });
+    try {
+        const { id } = req.params;
+        model.Product.findOne({ _id: id }).then((doc) => {
+            model.SubCategory.find().then((docs) => {
+                model.Category.find().then((result) => {
+                    res.render('admin/productEdit', { doc, main: result, sub: docs });
+                });
+            }).catch(() => {
+                res.redirect('/500');
             });
-        }).catch((e) => {
-            console.log(e);
         });
-    });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const productEditPost = async (req, res) => {
-    const { id } = req.params;
-    const {
-        prodcutName,
-        price,
-        stock,
-        color,
-        size,
-        brand,
-        ...cate
-    } = req.body;
-    const categories = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key in cate) {
-        if (key) { categories.push(cate[key]); }
-    }
-    if (req.files) {
-        const { image } = req.files;
-        const fileName = req.params.img;
-        // eslint-disable-next-line no-unused-vars
-        await image.mv(`./public/images/${fileName}`, (err, done) => {
-            if (!err) {
-                model.Product.findByIdAndUpdate(
-                    { _id: id },
-                    {
-                        product_name: prodcutName,
-                        price: Number(price),
-                        stock: Number(stock),
-                        category: categories,
-                        brand,
-                        color,
-                        size,
-                    },
-                ).then(() => {
-                    res.redirect('/admin/home/products');
-                });
-            }
-        });
-    } else {
-        model.Product.findByIdAndUpdate(
-            { _id: id },
-            {
-                product_name: prodcutName,
-                price,
-                stock,
-                category: categories,
-                brand,
-                color,
-                size,
-            },
-        ).then(() => {
-            res.redirect('/admin/home/products');
-        });
+    try {
+        const { id } = req.params;
+        const {
+            prodcutName,
+            price,
+            stock,
+            color,
+            size,
+            brand,
+            ...cate
+        } = req.body;
+        const categories = [];
+        // eslint-disable-next-line no-restricted-syntax
+        for (const key in cate) {
+            if (key) { categories.push(cate[key]); }
+        }
+        if (req.files) {
+            const { image } = req.files;
+            const fileName = req.params.img;
+            // eslint-disable-next-line no-unused-vars
+            await image.mv(`./public/images/${fileName}`, (err, done) => {
+                if (!err) {
+                    model.Product.findByIdAndUpdate(
+                        { _id: id },
+                        {
+                            product_name: prodcutName,
+                            price: Number(price),
+                            stock: Number(stock),
+                            category: categories,
+                            brand,
+                            color,
+                            size,
+                        },
+                    ).then(() => {
+                        res.redirect('/admin/home/products');
+                    });
+                }
+            });
+        } else {
+            model.Product.findByIdAndUpdate(
+                { _id: id },
+                {
+                    product_name: prodcutName,
+                    price,
+                    stock,
+                    category: categories,
+                    brand,
+                    color,
+                    size,
+                },
+            ).then(() => {
+                res.redirect('/admin/home/products');
+            });
+        }
+    } catch (error) {
+        res.redirect('/500');
     }
 };
 
 // category
 const categoryRender = (req, res) => {
-    model.Category.find().then((docs) => {
-        res.render('admin/adminCategory', { allData: docs });
-    }).catch((e) => {
-        console.log(e);
-    });
+    try {
+        model.Category.find().then((docs) => {
+            res.render('admin/adminCategory', { allData: docs });
+        }).catch(() => {
+            res.redirect('/500');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const categoryAdd = (req, res) => {
@@ -317,176 +353,213 @@ const categoryAdd = (req, res) => {
 };
 
 const categoryAddPost = (req, res) => {
-    console.log(req.body);
-    const name = req.body.categoryName;
-    const { Category } = model;
-    const category = new Category({
-        category_name: name,
-    });
-    // eslint-disable-next-line no-unused-vars
-    category.save().then((result) => {
-        res.redirect('/admin/home/category');
-    }).catch((e) => {
-        console.log(e);
-    });
+    try {
+        const name = req.body.categoryName;
+        const { Category } = model;
+        const category = new Category({
+            category_name: name,
+        });
+        category.save().then(() => {
+            res.redirect('/admin/home/category');
+        }).catch(() => {
+            res.redirect('/500');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const editCategoryRender = (req, res) => {
-    const { id } = req.params;
-    model.Category.findOne({ _id: id }).then((result) => {
-        // console.log(result);
-        res.render('admin/categoryEdit', { doc: result });
-    });
+    try {
+        const { id } = req.params;
+        model.Category.findOne({ _id: id }).then((result) => {
+            res.render('admin/categoryEdit', { doc: result });
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const editCategoryPost = (req, res) => {
-    const { id } = req.params;
-    const name = req.body.categoryName;
-    model.Category.findByIdAndUpdate({ _id: id }, { category_name: name })
-        // eslint-disable-next-line no-unused-vars
-        .then((doc) => {
-            res.redirect('/admin/home/category');
-        });
+    try {
+        const { id } = req.params;
+        const name = req.body.categoryName;
+        model.Category.findByIdAndUpdate({ _id: id }, { category_name: name })
+            // eslint-disable-next-line no-unused-vars
+            .then((doc) => {
+                res.redirect('/admin/home/category');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const subcategoryRender = (req, res) => {
-    model.SubCategory.aggregate([
-        {
-            $lookup: {
-                from: 'categories',
-                localField: 'category_id',
-                foreignField: '_id',
-                as: 'cate',
+    try {
+        model.SubCategory.aggregate([
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'category_id',
+                    foreignField: '_id',
+                    as: 'cate',
+                },
             },
-        },
-        { $unwind: '$cate' },
-    ]).then((docs) => {
-        // console.log(docs);
-        res.render('admin/adminSubCategory', { allData: docs });
-    }).catch((e) => {
-        console.log(e);
-    });
+            { $unwind: '$cate' },
+        ]).then((docs) => {
+            res.render('admin/adminSubCategory', { allData: docs });
+        }).catch(() => {
+            res.redirect('/500');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const addSubcategoryRender = (req, res) => {
-    model.Category.find().then((docs) => {
-        res.render('admin/adminAddSubcategory', { allData: docs });
-    }).catch((e) => {
-        console.log(e);
-    });
+    try {
+        model.Category.find().then((docs) => {
+            res.render('admin/adminAddSubcategory', { allData: docs });
+        }).catch(() => {
+            res.redirect('/500');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const addSubcategpryPost = (req, res) => {
-    console.log(req.body);
-    const cateid = req.body.category;
-    const subcate = req.body.subcategoryName;
-    const { SubCategory } = model;
-    const subcategory = new SubCategory({
-        category_id: cateid,
-        sub_category_name: subcate,
-    });
-    // eslint-disable-next-line no-unused-vars
-    subcategory.save().then((saved) => {
-        res.redirect('/admin/home/subcategory');
-    });
-    // res.send('lol');
+    try {
+        const cateid = req.body.category;
+        const subcate = req.body.subcategoryName;
+        const { SubCategory } = model;
+        const subcategory = new SubCategory({
+            category_id: cateid,
+            sub_category_name: subcate,
+        });
+        subcategory.save().then(() => {
+            res.redirect('/admin/home/subcategory');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const editSubcategoryRender = (req, res) => {
-    const { id } = req.params;
-    model.Category.find().then((docs) => {
-        model.SubCategory.findOne({ _id: id }).then((result) => {
-            // console.log(result);
-            res.render('admin/subcategoryEdit', { allCategory: docs, subcategory: result });
+    try {
+        const { id } = req.params;
+        model.Category.find().then((docs) => {
+            model.SubCategory.findOne({ _id: id }).then((result) => {
+                res.render('admin/subcategoryEdit', { allCategory: docs, subcategory: result });
+            });
+        }).catch(() => {
+            res.redirect('/500');
         });
-    }).catch((e) => {
-        console.log(e);
-    });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const editSubcategoryPost = (req, res) => {
-    const { id } = req.params;
-    const cate = req.body.category;
-    const subname = req.body.subcategoryName;
-    model.SubCategory.findByIdAndUpdate(
-        { _id: id },
-        { sub_category_name: subname, category_id: cate },
-    )
-        // eslint-disable-next-line no-unused-vars
-        .then((doc) => {
-            res.redirect('/admin/home/subcategory');
-        }).catch();
+    try {
+        const { id } = req.params;
+        const cate = req.body.category;
+        const subname = req.body.subcategoryName;
+        model.SubCategory.findByIdAndUpdate(
+            { _id: id },
+            { sub_category_name: subname, category_id: cate },
+        )
+            // eslint-disable-next-line no-unused-vars
+            .then((doc) => {
+                res.redirect('/admin/home/subcategory');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 // Order
 
 const orderRender = (req, res) => {
-    model.Order.aggregate([
-        {
-            $lookup: {
-                from: 'products',
-                localField: 'products.product_id',
-                foreignField: '_id',
-                as: 'product',
+    try {
+        model.Order.aggregate([
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'products.product_id',
+                    foreignField: '_id',
+                    as: 'product',
+                },
             },
-        },
-        {
-            $lookup: {
-                from: 'users',
-                localField: 'user_id',
-                foreignField: 'user_id',
-                as: 'user',
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user_id',
+                    foreignField: 'user_id',
+                    as: 'user',
+                },
             },
-        },
-        {
-            $lookup: {
-                from: 'addresses',
-                localField: 'address',
-                foreignField: '_id',
-                as: 'userAddress',
+            {
+                $lookup: {
+                    from: 'addresses',
+                    localField: 'address',
+                    foreignField: '_id',
+                    as: 'userAddress',
+                },
             },
-        },
-        { $sort: { createdAt: -1 } },
-    ]).then((result) => {
-        console.log(result);
-        res.render('admin/adminOrders.ejs', { allData: result });
-        // console.log(result);
-    });
+            { $sort: { createdAt: -1 } },
+        ]).then((result) => {
+            res.render('admin/adminOrders.ejs', { allData: result });
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const changeOrderStatus = (req, res) => {
-    const { orderID, paymentStatus, orderStatus } = req.body;
-    console.log(req.body);
-    model.Order.findByIdAndUpdate(
-        { _id: orderID },
-        {
-            paymentStatus, orderStatus,
-        },
-    ).then(() => {
-        res.send('success');
-    }).catch((e) => {
-        console.log(e);
-    });
+    try {
+        const { orderID, paymentStatus, orderStatus } = req.body;
+        model.Order.findByIdAndUpdate(
+            { _id: orderID },
+            {
+                paymentStatus, orderStatus,
+            },
+        ).then(() => {
+            res.send('success');
+        }).catch(() => {
+            res.redirect('/500');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const orderCompeleted = (req, res) => {
-    const { orderID } = req.body;
-    model.Order.findByIdAndUpdate(
-        { _id: orderID },
-        { orderStatus: 'Completed' },
-    ).then(() => {
-        res.send('done');
-    });
+    try {
+        const { orderID } = req.body;
+        model.Order.findByIdAndUpdate(
+            { _id: orderID },
+            { orderStatus: 'Completed' },
+        ).then(() => {
+            res.send('done');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const orderCancel = (req, res) => {
-    const { orderID } = req.body;
-    model.Order.findByIdAndUpdate(
-        { _id: orderID },
-        { orderStatus: 'Cancelled', paymentStatus: 'Cancelled' },
-    ).then(() => {
-        res.send('done');
-    });
+    try {
+        const { orderID } = req.body;
+        model.Order.findByIdAndUpdate(
+            { _id: orderID },
+            { orderStatus: 'Cancelled', paymentStatus: 'Cancelled' },
+        ).then(() => {
+            res.send('done');
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 const salesReportRender = async (req, res) => {
@@ -555,6 +628,7 @@ const salesReportRender = async (req, res) => {
                 },
             },
         ]);
+        console.log(monthReport);
         const yearReport = await model.Order.aggregate([
             {
                 $match: {
@@ -585,44 +659,109 @@ const salesReportRender = async (req, res) => {
         ]);
         res.render('admin/salesReport', { today: daliyReport, month: monthReport, year: yearReport });
     } catch (error) {
-        console.log(error);
+        res.redirect('/500');
     }
 };
 
 const salesCustomDate = async (req, res) => {
-    const { startDate, endDate } = req.body;
-    const start = moment(startDate, 'YYYY-MM-DD').startOf('day');
-    const end = moment(endDate, 'YYYY-MM-DD').endOf('day');
+    try {
+        const { startDate, endDate } = req.body;
+        const start = moment(startDate, 'YYYY-MM-DD').startOf('day');
+        const end = moment(endDate, 'YYYY-MM-DD').endOf('day');
 
-    const cusReport = await model.Order.aggregate([
-        {
-            $match: {
-                createdAt: {
-                    $gte: start.toDate(),
-                    $lte: end.toDate(),
+        const cusReport = await model.Order.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: start.toDate(),
+                        $lte: end.toDate(),
+                    },
                 },
             },
-        },
-        {
-            $lookup:
             {
-                from: 'users',
-                localField: 'user_id',
-                foreignField: 'user_id',
-                as: 'user',
+                $lookup:
+                {
+                    from: 'users',
+                    localField: 'user_id',
+                    foreignField: 'user_id',
+                    as: 'user',
+                },
             },
-        },
-        {
-            $project: {
-                order_id: 1,
-                user: 1,
-                paymentStatus: 1,
-                totalAmount: 1,
-                orderStatus: 1,
+            {
+                $project: {
+                    order_id: 1,
+                    user: 1,
+                    paymentStatus: 1,
+                    totalAmount: 1,
+                    orderStatus: 1,
+                },
             },
-        },
-    ]);
-    res.json(cusReport);
+        ]);
+        res.json(cusReport);
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const bannerRender = async (req, res) => {
+    try {
+        const banner = await model.Banner.find();
+        res.render('admin/adminBanner', { allData: banner });
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const addBannerRender = (req, res) => {
+    res.render('admin/adminAddBanner');
+};
+
+const addBannerPost = async (req, res) => {
+    try {
+        const image = req.files.Image;
+        // eslint-disable-next-line prefer-destructuring
+        const Banner = model.Banner;
+        // eslint-disable-next-line prefer-destructuring
+        const {
+            Name,
+        } = req.body;
+        const fileName = `${Date.now()}.jpg`;
+        // eslint-disable-next-line prefer-template, no-unused-vars
+        await image.mv('./public/images/' + fileName, (err, done) => {
+            if (!err) {
+                const banner = new Banner({
+                    image: fileName,
+                    name: Name,
+                });
+                banner.save().then(() => {
+                }).catch(() => {
+                    res.redirect('/500');
+                });
+                res.redirect('/admin/home/banner');
+            } else {
+                res.redirect('/500');
+            }
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const deleteBanner = (req, res) => {
+    try {
+        model.Banner.findOneAndDelete({ _id: req.params.id })
+            .then((result) => {
+                const filePath = `./public/images/${result.image}`;
+                fs.unlink(filePath, (err) => {
+                    if (err) throw err;
+                });
+                res.redirect('/admin/home/banner');
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
 };
 
 module.exports = {
@@ -660,4 +799,9 @@ module.exports = {
     // sales report
     salesReportRender,
     salesCustomDate,
+    // banner
+    bannerRender,
+    addBannerRender,
+    addBannerPost,
+    deleteBanner,
 };
