@@ -264,6 +264,26 @@ const bannerSchema = new Schema(
     },
 );
 
+const CouponSchema = new Schema({
+    coupon_code: {
+        type: String,
+        required: true,
+    },
+    offer: {
+        type: String,
+        required: true,
+    },
+    max_amount: {
+        type: String,
+        required: true,
+    },
+    coupon_status: {
+        type: String,
+        default: 'Active',
+    },
+    used_user_id: [String],
+});
+
 const Wishlist = mongoose.model('wishlist', wishlistSchema);
 const Users = mongoose.model('User', userSchema);
 const Address = mongoose.model('Address', addressSchema);
@@ -275,6 +295,7 @@ const SubCategory = mongoose.model('subcategory', SubCategorySchema);
 const Cart = mongoose.model('cart', cartSchema);
 const Order = mongoose.model('order', orderSchema);
 const Banner = mongoose.model('banner', bannerSchema);
+const Coupon = mongoose.model('coupon', CouponSchema);
 
 module.exports = {
     Users,
@@ -288,4 +309,5 @@ module.exports = {
     OTP,
     Wishlist,
     Banner,
+    Coupon,
 };

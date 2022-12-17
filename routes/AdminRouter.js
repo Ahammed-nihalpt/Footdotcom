@@ -43,13 +43,18 @@ router.post('/order-completed', middleware.adminSession, controller.orderCompele
 router.post('/order-cancel', middleware.adminSession, controller.orderCancel);
 
 // sales report
-router.get('/home/salesreport', controller.salesReportRender);
+router.get('/home/salesreport', middleware.adminSession, controller.salesReportRender);
 router.post('/salesreport/customdate', middleware.adminSession, controller.salesCustomDate);
 
 // Banner
-router.get('/home/banner', controller.bannerRender);
-router.get('/home/banner/add', controller.addBannerRender);
-router.post('/home/banner/add', controller.addBannerPost);
-router.get('/home/banner/delete/:id', controller.deleteBanner);
+router.get('/home/banner', middleware.adminSession, controller.bannerRender);
+router.get('/home/banner/add', middleware.adminSession, controller.addBannerRender);
+router.post('/home/banner/add', middleware.adminSession, controller.addBannerPost);
+router.get('/home/banner/delete/:id', middleware.adminSession, controller.deleteBanner);
+
+// coupon
+router.get('/home/coupon', controller.couponRender);
+router.get('/home/coupon/add', controller.addCouponRender);
+router.post('/home/coupon/add', controller.addCouponPost);
 
 module.exports = router;

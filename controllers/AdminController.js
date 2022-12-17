@@ -628,7 +628,6 @@ const salesReportRender = async (req, res) => {
                 },
             },
         ]);
-        console.log(monthReport);
         const yearReport = await model.Order.aggregate([
             {
                 $match: {
@@ -764,6 +763,39 @@ const deleteBanner = (req, res) => {
     }
 };
 
+const couponRender = async (req, res) => {
+    try {
+        const coupons = await model.Coupon.find();
+        res.render('admin/adminCoupon', { allData: coupons });
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const addCouponRender = (req, res) => {
+    try {
+        res.render('admin/addCoupon', { message: req.flash('message') });
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const addCouponPost = async (req, res) => {
+    try {
+        const { code, offer, amount } = req.body;
+        const already = await model.Coupon.find({ code });
+        if (already.length > 0) {
+            req.flash('message', ['Code already exist']);
+            res.redirect('admin/home/coupon/add');
+        } else {
+            console.log(offer);
+            console.log(amount);
+        }
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
 module.exports = {
     // admin
     adminRender,
@@ -804,4 +836,8 @@ module.exports = {
     addBannerRender,
     addBannerPost,
     deleteBanner,
+    // coupon
+    couponRender,
+    addCouponRender,
+    addCouponPost,
 };
