@@ -53,6 +53,9 @@ router.get('/user/delete-address/:aid', middleware.userSession, controller.delet
 router.get('/user/change-password', middleware.userSession, controller.changePassword);
 router.post('/user/change-password', middleware.userSession, controller.changePasswodPost);
 
+// coupon
+router.post('/coupon-check', controller.couponCheck);
+
 // 404
 router.get('/404', controller.notFound);
 // 500

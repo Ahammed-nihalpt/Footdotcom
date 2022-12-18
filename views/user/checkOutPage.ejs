@@ -24,12 +24,45 @@
                   style="border: 1px solid; width: 100%;"
                   class="p-4 d9"
                 >
+                <div class="d-flex w-50 align-items-center d-none">
+                  <lable for="">Coupon:</lable>
+                  <div class="d-flex align-items-center ms-2" style="background-color: #fff;border-radius: 10px;">
+                    <input type="text" id="coupon" name="coupon" class="form-control he" placeholder="Coupon Code" style="outline: none; border: none;border-radius: 5px;">
+                    <button class="btn btn-sm white blue he" type="button" onclick="cou('<%= sum %>')">Apply</button>
+                  </div>
+                </div>
+                <div class="d-flex w-100 align-items-center">
+                  <lable for="">Coupon:</lable>
+                  <div class="d-flex flex-column align-items-start p-2 ms-2" style="border: 1px solid;">
+                    <h6>NOW20</h6>
+                    <div> discount of &nbsp;<label for="" id="per"> 20% &nbsp;</label> upto &nbsp;<label for="" id="amount">200</label>&nbsp;applied</div>
+                  </div>
+                </div>
                 <h6>Products: </h6>
+                <table class="w-100">
                   <% allData.forEach(element => { %>
-                  <div>&emsp; <%= element.productDetail.product_name %>  &emsp; Qty: <%= element.productQuantity %>  <label for="">x Rs.<%= element.productDetail.price %></label>&emsp; Price: Rs. <%= element.productPrice %></div> 
-                  <% }) %>
+                    <tr class="text-center">
+                      <td><%= element.productDetail.product_name %></td>
+                      <td><%= element.productQuantity %></td>
+                      <td>x Rs.<%= element.productDetail.price %></td>
+                    </tr>
+                    <% }) %>
+                </table>                  
                   <hr>
-                  &emsp; <b>Total: &emsp; &emsp; &emsp;&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Rs.<%= sum %> </b>  
+                  <table class="w-100">
+                    <tr class="text-center">
+                      <th>Product total:</th>
+                      <th>Rs.<%= sum %></th>
+                    </tr>
+                    <tr class="text-center">
+                      <th>Discount:</th>
+                      <th>Rs.<label for="" id="discount">0</label></th>
+                    </tr>
+                    <tr class="text-center">
+                      <th>Total:</th>
+                      <th>Rs.<label for="" id="total"><%= sum %></label></th>
+                    </tr>
+                  </table>
                 </div>
               </div>
               <div class="shipadrss col-md-6 mt-3">
@@ -120,6 +153,9 @@
       .white{
         color: white;
       }
+      .white:hover{
+        color: white;
+      }
       .con{
         background-color: #fcbf49;
         color: #003049;
@@ -127,11 +163,13 @@
       .con:hover{
         color: #000;
       }
+      .he{
+        height: 33px !important;
+      }
     </style>
     <script>
       $("#checkout").submit((e) => {
         // alert('hemmo')
-        e.preventDefault();
           $.ajax({
           url: "/order-confirmed",
           method: "post",
@@ -145,6 +183,25 @@
             },
           });
       });
+
+      function cou(amount) {
+        const code = document.getElementById('coupon').value;
+        $.ajax({
+          url: "/coupon-check",
+          method: "post",
+          data: {
+            code,
+            amount,
+          },
+          success: (response) => {
+                if (response.success) {
+                  alert(response.check)
+                } else {
+                  alert(response);
+                }
+            },
+          });
+      }
       function razorPay(order) {
         var options = {
           key: "rzp_test_mqyD5x6VcWLJVE", // Enter the Key ID generated from the Dashboard

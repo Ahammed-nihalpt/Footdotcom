@@ -56,5 +56,10 @@ router.get('/home/banner/delete/:id', middleware.adminSession, controller.delete
 router.get('/home/coupon', controller.couponRender);
 router.get('/home/coupon/add', controller.addCouponRender);
 router.post('/home/coupon/add', controller.addCouponPost);
+router.get('/home/coupon/deactivate/:id', controller.deactivateCoupon);
+router.get('/home/coupon/activate/:id', controller.activateCoupon);
+router.get('/home/coupon/delete/:id', controller.deleteCoupon);
+router.get('/home/coupon/edit/:id', controller.editCouponRender);
+router.post('/home/coupon/edit', controller.editCouponPost);
 
 module.exports = router;

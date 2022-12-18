@@ -13,7 +13,6 @@ const adminRender = async (req, res) => {
         const orderData = await model.Order.find({ orderStatus: { $ne: 'Cancelled' } });
         const orderCount = await model.Order.countDocuments({});
         const pendingOrder = await model.Order.find({ orderStatus: 'Pending' }).count();
-        // const pending = pendingOrder.length;
         const completed = await model.Order.find({ orderStatus: 'Completed' }).count();
         const delivered = await model.Order.find({ orderStatus: 'Delivered' }).count();
         const cancelled = await model.Order.find({ orderStatus: 'Cancelled' }).count();
@@ -788,9 +787,88 @@ const addCouponPost = async (req, res) => {
             req.flash('message', ['Code already exist']);
             res.redirect('admin/home/coupon/add');
         } else {
-            console.log(offer);
-            console.log(amount);
+            // eslint-disable-next-line prefer-destructuring
+            const Coupon = model.Coupon;
+            const coupon = new Coupon({
+                coupon_code: code,
+                offer,
+                max_amount: amount,
+            });
+            await coupon.save();
+            res.redirect('/admin/home/coupon');
         }
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const deactivateCoupon = (req, res) => {
+    try {
+        model.Coupon.findByIdAndUpdate({ _id: req.params.id }, { coupon_status: 'Deactivated' })
+            .then(() => {
+                res.redirect('/admin/home/coupon');
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const activateCoupon = (req, res) => {
+    try {
+        model.Coupon.findByIdAndUpdate({ _id: req.params.id }, { coupon_status: 'Active' })
+            .then(() => {
+                res.redirect('/admin/home/coupon');
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const deleteCoupon = (req, res) => {
+    try {
+        model.Coupon.findOneAndDelete({ _id: req.params.id })
+            .then(() => {
+                res.redirect('/admin/home/coupon');
+            }).catch(() => {
+                res.redirect('/500');
+            });
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const editCouponRender = (req, res) => {
+    try {
+        const { id } = req.params;
+        model.Coupon.findOne({ _id: id }).then((doc) => {
+            res.render('admin/editCoupon', { data: doc });
+        });
+    } catch (error) {
+        res.redirect('/500');
+    }
+};
+
+const editCouponPost = async (req, res) => {
+    try {
+        const {
+            id,
+            code,
+            offer,
+            amount,
+        } = req.body;
+        await model.Coupon.findByIdAndUpdate(
+            { _id: id },
+            {
+                coupon_code: code,
+                offer,
+                max_amount: amount,
+            },
+        );
+        res.redirect('/admin/home/coupon');
     } catch (error) {
         res.redirect('/500');
     }
@@ -840,4 +918,9 @@ module.exports = {
     couponRender,
     addCouponRender,
     addCouponPost,
+    deactivateCoupon,
+    activateCoupon,
+    deleteCoupon,
+    editCouponRender,
+    editCouponPost,
 };

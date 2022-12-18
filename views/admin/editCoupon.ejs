@@ -3,46 +3,33 @@
     <%- include('../partials/adminPartials/AdminHeader.ejs') %>
     <link rel="stylesheet" href="/css/adminAddproducts.css" type="text/css" />
     <section class="body-section">
-      <% if(message != ''){ %>
-        <div
-          class="alert alert-danger alert-dismissible fade show al-mod"
-          role="alert"
-        >
-          <strong><%= message %> </strong>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
-          ></button>
-        </div>
-        <% } %>
         <h3 class="i-names">Add Coupon</h3>
         <div class="container d-flex justify-content-center">
           <div class=" center-div p-2">
-            <form action="" method="post" id="coupon_form">
+            <form action="/admin/home/coupon/edit" method="post" id="coupon_form">
               <div class="row p-2 mt-3">
                 <div class="col-md-12">
                   <label for="formFile" class="form-label">Coupon Code:</label>
-                  <input class="form-control" placeholder="Coupon Code" type="text" id="productName" name="code">
+                  <input class="form-control" placeholder="Coupon Code" value="<%= data.coupon_code %>" type="text" id="productName" name="code">
+                  <input type="hidden" value="<%= data._id %>" name="id">
                   <div id="nameerror" class="error-message"></div>
                 </div>
               </div>
               <div class="row p-2">
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Offer:</label>
-                  <input class="form-control" placeholder="Offer (in %)" type="text" id="price" name="offer">
+                  <input class="form-control" placeholder="Offer (in %)" value="<%= data.offer %>" type="text" id="price" name="offer">
                   <div id="priceerror" class="error-message"></div>
                 </div>
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Maximum Amount:</label>
-                  <input class="form-control" placeholder="Maximum Amount" type="text" id="stock" name="amount">
+                  <input class="form-control" placeholder="Maximum Amount" type="text" value="<%= data.max_amount %>" id="stock" name="amount">
                   <div id="stockerror" class="error-message"></div>
                 </div>
               </div>
               <div class="row p-2 mt-2 mb-2">
                 <div class="col-md-12 d-flex justify-content-center">
-                  <button class="btn sub-btn btn-lg">Add Coupon</button>
+                  <button class="btn sub-btn btn-lg">Edit Coupon</button>
                 </div>
               </div>
             </form>

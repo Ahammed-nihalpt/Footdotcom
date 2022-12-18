@@ -1037,6 +1037,24 @@ const error = (req, res) => {
     res.render('500');
 };
 
+const couponCheck = async (req, res) => {
+    const { code, amount } = req.body;
+    console.log(code);
+    const check = await model.Coupon.findOne({ coupon_code: code });
+    if (check) {
+        let discount = 0;
+        const off = (Number(amount) * Number(check.offer)) / 100;
+        if (off > check.max_amount) {
+            discount = check.max_amount;
+        } else {
+            discount = off;
+        }
+        res.json([{ success: true }, { discount }, { code }]);
+    } else {
+        res.json({ success: false });
+    }
+};
+
 module.exports = {
     landingPageRender,
     userHomeRender,
@@ -1068,4 +1086,5 @@ module.exports = {
     removeWishlistProduct,
     guestProduct,
     error,
+    couponCheck,
 };

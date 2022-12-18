@@ -17,8 +17,8 @@
                 <thead>
                   <tr>
                       <th scope="col">Coupon</th>
-                      <th scope="col">Offer</th>
-                      <th scope="col">Max Amount</th>
+                      <th scope="col">Offer (in %)</th>
+                      <th scope="col">Max Amount (in Rs.)</th>
                       <th scope="col">Coupon Status</th>
                       <th scope="col">Option</th>
                   </tr>
@@ -26,7 +26,7 @@
                 
                 <tbody>
                   <% allData.forEach(data =>{  %>
-                  <tr <% if(data.coupon_status === 'deactivated'){ %> 
+                  <tr <% if(data.coupon_status === 'Deactivated'){ %> 
                     class="table-danger"
                      <% } %> >
                       <td><%= data.coupon_code %></td>
@@ -35,7 +35,7 @@
                       <td><%= data.coupon_status %></td>
                       <td colspan="3">
                         <div class="d-flex flex-column gap-1">
-                        <% if(data.coupon_status === 'active') { %> 
+                        <% if(data.coupon_status === 'Active') { %> 
                           <a
                           href="/admin/home/coupon/deactivate/<%= data._id %>"
                           class="btn  btn-outline-danger btn-sm"
@@ -84,25 +84,9 @@
     $('#ptable').DataTable();
     });
 
-    function addsize(id) {
-      const size = document.getElementById('size-input'+id).value;
-      $.ajax({
-          url: '/admin/home/addsize',
-          data: {
-              size,
-              product: id,
-          },
-          method: 'post',
-          success: (res) => {
-              // document.getElementById('quantity').innerText = Number(qty) + Number(count);
-              location.reload();
-              // $('#quantity').load(`${document.URL} #quantity`);
-          },
-      });
-    }
   </script>
   <style>
-    #menu .items li:nth-child(2) {
+    #menu .items li:nth-child(8) {
       border-left: 4px solid #fff;
     }
   </style>
