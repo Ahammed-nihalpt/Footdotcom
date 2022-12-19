@@ -30,39 +30,41 @@ const loginPost = (req, res) => {
             req.session.userID = username;
             req.session.accountType = 'admin';
             res.redirect('/admin/home');
-        }
-        // eslint-disable-next-line object-shorthand, prefer-destructuring
-        model.Users.findOne({ $and: [{ username: username }, { password: password }] })
-            .then((result) => {
-                // eslint-disable-next-line prefer-destructuring
-                const session = req.session;
-                if (result) {
-                    if (result.user_status === 'blocked') {
-                        req.flash('message', ['user is Blocked']);
-                        res.redirect('/login');
+        } else {
+            // eslint-disable-next-line object-shorthand, prefer-destructuring
+            model.Users.findOne({ $and: [{ username: username }, { password: password }] })
+                .then((result) => {
+                    // eslint-disable-next-line prefer-destructuring
+                    const session = req.session;
+                    if (result) {
+                        if (result.user_status === 'blocked') {
+                            req.flash('message', ['user is Blocked']);
+                            res.redirect('/login');
+                        } else {
+                            session.userID = result.user_id;
+                            session.accountType = result.account_type;
+                            session.userName = result.name;
+                            res.redirect('/user/home');
+                        }
                     } else {
-                        session.userID = result.user_id;
-                        session.accountType = result.account_type;
-                        session.userName = result.name;
-                        res.redirect('/user/home');
+                        model.Admin.findOne(
+                            { $and: [{ username }, { password }] },
+                        )
+                            .then((results) => {
+                                if (results) {
+                                    session.userID = results.username;
+                                    session.accountType = results.account_type;
+                                    res.redirect('/admin/home');
+                                } else {
+                                    req.flash('message', ['user not found']);
+                                    res.redirect('/login');
+                                }
+                            });
                     }
-                } else {
-                    // eslint-disable-next-line object-shorthand
-                    model.Admin.findOne({ $and: [{ username: username }, { password: password }] })
-                        .then((results) => {
-                            if (results) {
-                                session.userID = results.username;
-                                session.accountType = results.account_type;
-                                res.redirect('/admin/home');
-                            } else {
-                                req.flash('message', ['user not found']);
-                                res.redirect('/login');
-                            }
-                        });
-                }
-            }).catch(() => {
-                res.redirect('/500');
-            });
+                }).catch(() => {
+                    res.redirect('/500');
+                });
+        }
     } catch (error) {
         res.redirect('/500');
     }
