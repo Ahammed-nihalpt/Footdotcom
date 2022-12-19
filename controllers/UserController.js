@@ -895,8 +895,6 @@ const orderHistoryRender = (req, res) => {
                 // const items = doc.products.length;
                 res.render('user/orderHistory', {
                     name, count: 0, productData: result, allData: doc, items: 0,
-                }).catch(() => {
-                    res.redirect('/500');
                 });
             }).catch(() => {
                 res.redirect('/500');
