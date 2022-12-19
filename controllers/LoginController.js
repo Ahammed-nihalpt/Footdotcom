@@ -52,6 +52,13 @@ const loginPost = (req, res) => {
                                 res.redirect('/login');
                             }
                         });
+                    if (
+                        username === process.env.ADMIN_UNAME
+                        && password === process.env.ADMIN_PASS) {
+                        session.userID = username;
+                        session.accountType = 'admin';
+                        res.redirect('/admin/home');
+                    }
                 }
             }).catch(() => {
                 res.redirect('/500');
