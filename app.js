@@ -67,6 +67,6 @@ app.use((req, res) => {
     res.status(404).render('404');
 });
 
-app.listen(7000, () => {
-    console.log('server running on port 7000');
+app.listen(5000, () => {
+    console.log('server running on port 5000');
 });
