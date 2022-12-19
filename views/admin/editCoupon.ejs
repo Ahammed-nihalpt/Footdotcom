@@ -10,7 +10,7 @@
               <div class="row p-2 mt-3">
                 <div class="col-md-12">
                   <label for="formFile" class="form-label">Coupon Code:</label>
-                  <input class="form-control" placeholder="Coupon Code" value="<%= data.coupon_code %>" type="text" id="productName" name="code">
+                  <input class="form-control" placeholder="Coupon Code" value="<%= data.coupon_code %>" type="text" id="productName" name="code" required>
                   <input type="hidden" value="<%= data._id %>" name="id">
                   <div id="nameerror" class="error-message"></div>
                 </div>
@@ -18,12 +18,12 @@
               <div class="row p-2">
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Offer:</label>
-                  <input class="form-control" placeholder="Offer (in %)" value="<%= data.offer %>" type="text" id="price" name="offer">
+                  <input class="form-control" placeholder="Offer (in %)" value="<%= data.offer %>" type="text" id="price" name="offer" required>
                   <div id="priceerror" class="error-message"></div>
                 </div>
                 <div class="col-md-6">
                   <label for="formFile" class="form-label">Maximum Amount:</label>
-                  <input class="form-control" placeholder="Maximum Amount" type="text" value="<%= data.max_amount %>" id="stock" name="amount">
+                  <input class="form-control" placeholder="Maximum Amount" type="text" value="<%= data.max_amount %>" id="stock" name="amount" required>
                   <div id="stockerror" class="error-message"></div>
                 </div>
               </div>

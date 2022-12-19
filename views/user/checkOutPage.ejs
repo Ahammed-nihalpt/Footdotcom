@@ -24,18 +24,19 @@
                   style="border: 1px solid; width: 100%;"
                   class="p-4 d9"
                 >
-                <div class="d-flex w-50 align-items-center d-none">
+                <div class=" w-50 align-items-center" id="apply" style="display: flex;">
                   <lable for="">Coupon:</lable>
                   <div class="d-flex align-items-center ms-2" style="background-color: #fff;border-radius: 10px;">
                     <input type="text" id="coupon" name="coupon" class="form-control he" placeholder="Coupon Code" style="outline: none; border: none;border-radius: 5px;">
                     <button class="btn btn-sm white blue he" type="button" onclick="cou('<%= sum %>')">Apply</button>
                   </div>
                 </div>
-                <div class="d-flex w-100 align-items-center">
+                <div class="d-flex w-100 align-items-center" id="applied" style="display: none !important;">
                   <lable for="">Coupon:</lable>
-                  <div class="d-flex flex-column align-items-start p-2 ms-2" style="border: 1px solid;">
-                    <h6>NOW20</h6>
-                    <div> discount of &nbsp;<label for="" id="per"> 20% &nbsp;</label> upto &nbsp;<label for="" id="amount">200</label>&nbsp;applied</div>
+                  <div class="d-flex flex-column align-items-start p-2 ms-2" id="applied" style="border: 1px solid;">
+                    <div style="font-size: 10px;"><a href="" onclick="remove('<%= sum %>')">Remove</a></div>
+                    <h6 id="coup_code">NOW20</h6>
+                    <div> discount of &nbsp;<label for="" id="per"> 20% &nbsp;</label> upto &nbsp;Rs.<label for="" id="amount">200</label></div>
                   </div>
                 </div>
                 <h6>Products: </h6>
@@ -56,7 +57,7 @@
                     </tr>
                     <tr class="text-center">
                       <th>Discount:</th>
-                      <th>Rs.<label for="" id="discount">0</label></th>
+                      <th>- Rs.<label for="" id="discount">0</label></th>
                     </tr>
                     <tr class="text-center">
                       <th>Total:</th>
@@ -143,6 +144,7 @@
     ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="/javascript/cart.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <style>
       .blue{
         background-color: #003049;
@@ -170,6 +172,7 @@
     <script>
       $("#checkout").submit((e) => {
         // alert('hemmo')
+        e.preventDefault();
           $.ajax({
           url: "/order-confirmed",
           method: "post",
@@ -194,13 +197,37 @@
             amount,
           },
           success: (response) => {
-                if (response.success) {
-                  alert(response.check)
+                if (response[0].success) {
+                  swal("Coupon Added!", "You got a discount of Rs." + response[0].dis, "success")
+                    .then(() => {
+                      document.getElementById('discount').innerHTML = response[0].dis;
+                      const total = Number(amount) - Number(response[0].dis);
+                      document.getElementById('total').innerHTML = total;
+                      applied(response[1].check);
+                    });
                 } else {
-                  alert(response);
+                  swal("Error", response[0].message , "error")
+                    .then(() => {
+                          location.reload()
+                  });
                 }
             },
           });
+      }
+
+      function applied(data) {
+        document.getElementById('coup_code').innerHTML = data.coupon_code;
+        document.getElementById('per').innerHTML = data.offer;
+        document.getElementById('amount').innerHTML = data.max_amount;
+        document.getElementById('applied').style.display = 'block';
+        document.getElementById('apply').style.display = 'none';
+      }
+
+      function remove(sum) {
+        document.getElementById('applied').style.display = 'none';
+        document.getElementById('apply').style.display = 'flex';
+        document.getElementById('discount').innerHTML = 0;
+        document.getElementById('total').innerHTML = sum;
       }
       function razorPay(order) {
         var options = {

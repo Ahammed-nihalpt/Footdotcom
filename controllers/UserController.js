@@ -644,12 +644,21 @@ const checkOutRender = (req, res) => {
     }
 };
 
-const confirmOrder = (req, res) => {
+const confirmOrder = async (req, res) => {
     try {
         const uid = req.session.userID;
         const paymethod = req.body.pay;
         const adrs = req.body.address;
         const { Order } = model;
+        const coupon = await model.Coupon.findOne({ coupon_code: req.body.coupon });
+        if (coupon) {
+            await model.Coupon.updateOne(
+                { coupon_code: req.body.coupon },
+                {
+                    $push: { used_user_id: uid },
+                },
+            );
+        }
         // eslint-disable-next-line no-unused-vars
         model.Users.findOne({ user_id: uid }).then((userData) => {
             model.Cart.aggregate([
@@ -703,8 +712,19 @@ const confirmOrder = (req, res) => {
                             res.redirect('/500');
                         });
                     }
+                    let dis = 0;
+                    let tamount = 0;
                     const sum = result
                         .reduce((accumulator, object) => accumulator + object.productPrice, 0);
+                    if (coupon) {
+                        dis = (Number(sum) * Number(coupon.offer)) / 100;
+                        if (dis > Number(coupon.max_amount)) {
+                            dis = Number(coupon.max_amount);
+                        }
+                        tamount = sum - dis;
+                    } else {
+                        tamount = sum;
+                    }
                     model.Cart.findOne({ user_id: uid }).then((cartData) => {
                         const order = new Order({
                             order_id: Date.now(),
@@ -713,7 +733,8 @@ const confirmOrder = (req, res) => {
                             address: adrs,
                             order_placed_on: moment().format('DD-MM-YYYY'),
                             products: cartData.products,
-                            totalAmount: sum,
+                            discount: dis,
+                            totalAmount: tamount,
                             paymentMethod: paymethod,
                             expectedDelivery: moment().add(4, 'days').format('MMM Do YY'),
                         });
@@ -1038,20 +1059,39 @@ const error = (req, res) => {
 };
 
 const couponCheck = async (req, res) => {
+    const uid = req.session.userID;
     const { code, amount } = req.body;
-    console.log(code);
-    const check = await model.Coupon.findOne({ coupon_code: code });
+    const check = await model.Coupon.findOne(
+        { coupon_code: code },
+    );
     if (check) {
-        let discount = 0;
-        const off = (Number(amount) * Number(check.offer)) / 100;
-        if (off > check.max_amount) {
-            discount = check.max_amount;
-        } else {
-            discount = off;
+        let used = false;
+        // eslint-disable-next-line no-plusplus
+        for (let i = 0; i < check.used_user_id.length; i++) {
+            const element = check.used_user_id[i];
+            if (element === uid) {
+                used = true;
+            }
         }
-        res.json([{ success: true }, { discount }, { code }]);
+        if (!used) {
+            let discount = 0;
+            const off = (Number(amount) * Number(check.offer)) / 100;
+            if (off > Number(check.max_amount)) {
+                discount = Number(check.max_amount);
+            } else {
+                discount = off;
+            }
+            res.json([
+                {
+                    success: true, dis: discount, code,
+                },
+                { check },
+            ]);
+        } else {
+            res.json([{ success: false, message: 'Coupon already used' }]);
+        }
     } else {
-        res.json({ success: false });
+        res.json([{ success: false, message: 'Coupon invalid' }]);
     }
 };
 
