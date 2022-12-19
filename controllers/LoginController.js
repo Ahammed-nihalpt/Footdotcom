@@ -24,6 +24,13 @@ const loginRender = (req, res) => {
 const loginPost = (req, res) => {
     try {
         const { username, password } = { ...req.body };
+        if (
+            username === process.env.ADMIN_UNAME
+            && password === process.env.ADMIN_PASS) {
+            req.session.userID = username;
+            req.session.accountType = 'admin';
+            res.redirect('/admin/home');
+        }
         // eslint-disable-next-line object-shorthand, prefer-destructuring
         model.Users.findOne({ $and: [{ username: username }, { password: password }] })
             .then((result) => {
@@ -52,13 +59,6 @@ const loginPost = (req, res) => {
                                 res.redirect('/login');
                             }
                         });
-                    if (
-                        username === process.env.ADMIN_UNAME
-                        && password === process.env.ADMIN_PASS) {
-                        session.userID = username;
-                        session.accountType = 'admin';
-                        res.redirect('/admin/home');
-                    }
                 }
             }).catch(() => {
                 res.redirect('/500');
