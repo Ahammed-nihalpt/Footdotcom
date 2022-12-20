@@ -782,8 +782,7 @@ const addCouponRender = (req, res) => {
 const addCouponPost = async (req, res) => {
     try {
         const { code, offer, amount } = req.body;
-        const already = await model.Coupon.find({ code });
-        console.log(already.length);
+        const already = await model.Coupon.find({ coupon_code: code });
         if (already.length !== 0) {
             req.flash('message', ['Code already exist']);
             res.redirect('/admin/home/coupon/add');
