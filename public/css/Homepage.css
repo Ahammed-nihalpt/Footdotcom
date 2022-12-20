@@ -141,7 +141,7 @@ aside button.close {
     padding: 10px;
     width: 50%;
     z-index: 999;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   #filterBtn {
     border-radius: 5px;
