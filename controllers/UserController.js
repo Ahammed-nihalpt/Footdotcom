@@ -22,6 +22,35 @@ const landingPageRender = async (req, res) => {
     }
 };
 
+const guestHome = async (req, res) => {
+    let id;
+    if (req.params.gender === 'men') {
+        const sc = await model.SubCategory.findOne({ sub_category_name: 'Men' });
+        id = sc._id;
+    } else if (req.params.gender === 'women') {
+        const sc = await model.SubCategory.findOne({ sub_category_name: 'Women' });
+        id = sc._id;
+    } else if (req.params.gender === 'kids') {
+        const sc = await model.SubCategory.findOne({ sub_category_name: 'Kids' });
+        id = sc._id;
+    }
+    const pageNum = req.query.page;
+    const perPage = 8;
+    const docCount = await model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: id } }] })
+        .countDocuments();
+    model.Product.find({ $and: [{ product_status: 'active' }, { stock: { $gt: 0 } }, { category: { $in: id } }] })
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
+        .then((result) => {
+            res.render('user/guestHome', {
+                allData: result,
+                currentPage: pageNum,
+                totalDocuments: docCount,
+                pages: Math.ceil(docCount / perPage),
+            });
+        });
+};
+
 const guestProduct = async (req, res) => {
     try {
         const id = mongoose.Types.ObjectId(req.params.id);
@@ -1096,8 +1125,13 @@ const couponCheck = async (req, res) => {
     }
 };
 
+const paymentFailedRender = (req, res) => {
+    res.render('user/paymentFailed.ejs');
+};
+
 module.exports = {
     landingPageRender,
+    guestHome,
     userHomeRender,
     homeFilter,
     search,
@@ -1128,4 +1162,5 @@ module.exports = {
     guestProduct,
     error,
     couponCheck,
+    paymentFailedRender,
 };

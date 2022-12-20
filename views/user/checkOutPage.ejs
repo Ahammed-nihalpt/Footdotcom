@@ -24,7 +24,7 @@
                   style="border: 1px solid; width: 100%;"
                   class="p-4 d9"
                 >
-                <div class=" w-50 align-items-center" id="apply" style="display: flex;">
+                <div class="w-100 w-md-50 align-items-center" id="apply" style="display: flex;">
                   <lable for="">Coupon:</lable>
                   <div class="d-flex align-items-center ms-2" style="background-color: #fff;border-radius: 10px;">
                     <input type="text" id="coupon" name="coupon" class="form-control he" placeholder="Coupon Code" style="outline: none; border: none;border-radius: 5px;">
@@ -269,7 +269,7 @@
         if (response.success) {
           location.href = `/order-success/${response.oid}`;
         } else {
-          location.href = "/paymentFail";
+          location.href = "/payment-failed";
         }
       },
     });

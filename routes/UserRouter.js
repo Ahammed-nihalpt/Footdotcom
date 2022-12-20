@@ -7,6 +7,7 @@ const router = express.Router();
 
 // landingpage
 router.get('/', controller.landingPageRender);
+router.get('/products/:gender', controller.guestHome);
 router.get('/product/:id', controller.guestProduct);
 
 // homePage
@@ -30,6 +31,7 @@ router.post('/order-confirmed', middleware.userSession, controller.confirmOrder)
 router.get('/order-success/:oid', middleware.userSession, controller.orderSuccessRender);
 router.get('/paymentFail', middleware.userSession, controller.paymentFailure);
 router.post('/verifyPayment', middleware.userSession, controller.verifyPayment);
+router.get('/payment-failed', controller.paymentFailedRender);
 
 // Wishlist
 router.get('/user/wishlist', middleware.userSession, controller.wishlistRender);
@@ -54,7 +56,7 @@ router.get('/user/change-password', middleware.userSession, controller.changePas
 router.post('/user/change-password', middleware.userSession, controller.changePasswodPost);
 
 // coupon
-router.post('/coupon-check', controller.couponCheck);
+router.post('/coupon-check', middleware.userSession, controller.couponCheck);
 
 // 404
 router.get('/404', controller.notFound);
