@@ -891,8 +891,7 @@ const orderHistoryRender = (req, res) => {
             },
         ]).then((result) => {
             // eslint-disable-next-line no-underscore-dangle
-            model.Order.find({ user_id: 'aa8e7f6f-6176-41f1-8677-4cb23efea371' }).then((doc) => {
-                // const items = doc.products.length;
+            model.Order.find({ user_id: uid }).then((doc) => {
                 res.render('user/orderHistory', {
                     name, count: 0, productData: result, allData: doc, items: 0,
                 });
