@@ -53,13 +53,13 @@ router.post('/home/banner/add', middleware.adminSession, controller.addBannerPos
 router.get('/home/banner/delete/:id', middleware.adminSession, controller.deleteBanner);
 
 // coupon
-router.get('/home/coupon', controller.couponRender);
-router.get('/home/coupon/add', controller.addCouponRender);
-router.post('/home/coupon/add', controller.addCouponPost);
-router.get('/home/coupon/deactivate/:id', controller.deactivateCoupon);
-router.get('/home/coupon/activate/:id', controller.activateCoupon);
-router.get('/home/coupon/delete/:id', controller.deleteCoupon);
-router.get('/home/coupon/edit/:id', controller.editCouponRender);
-router.post('/home/coupon/edit', controller.editCouponPost);
+router.get('/home/coupon', middleware.adminSession, controller.couponRender);
+router.get('/home/coupon/add', middleware.adminSession, controller.addCouponRender);
+router.post('/home/coupon/add', middleware.adminSession, controller.addCouponPost);
+router.get('/home/coupon/deactivate/:id', middleware.adminSession, controller.deactivateCoupon);
+router.get('/home/coupon/activate/:id', middleware.adminSession, controller.activateCoupon);
+router.get('/home/coupon/delete/:id', middleware.adminSession, controller.deleteCoupon);
+router.get('/home/coupon/edit/:id', middleware.adminSession, controller.editCouponRender);
+router.post('/home/coupon/edit', middleware.adminSession, controller.editCouponPost);
 
 module.exports = router;
