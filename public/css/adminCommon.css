@@ -133,7 +133,6 @@ body {
     display: initial;
   }
   #interface {
-    width: 100%;
     margin-left: 0px;
     display: inline-block;
     transition: 0.3s ease;
