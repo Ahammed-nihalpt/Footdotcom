@@ -1,4 +1,5 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
 /* eslint-disable indent */
 const mongoose = require('mongoose');
@@ -52,11 +53,14 @@ const homeGender = async (req, res) => {
     try {
         let id;
         if (req.params.gender === 'men') {
-            id = mongoose.Types.ObjectId('6389f58469358426594f7f47');
+            const sc = await model.SubCategory.findOne({ sub_category_name: 'Men' });
+            id = sc._id;
         } else if (req.params.gender === 'women') {
-            id = mongoose.Types.ObjectId('6396ef9df3aea571db60f1de');
+            const sc = await model.SubCategory.findOne({ sub_category_name: 'Women' });
+            id = sc._id;
         } else if (req.params.gender === 'kids') {
-            id = mongoose.Types.ObjectId('6396efa4f3aea571db60f1e2');
+            const sc = await model.SubCategory.findOne({ sub_category_name: 'Kids' });
+            id = sc._id;
         }
         const pageNum = req.query.page;
         const perPage = 8;
