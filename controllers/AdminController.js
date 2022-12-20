@@ -783,9 +783,10 @@ const addCouponPost = async (req, res) => {
     try {
         const { code, offer, amount } = req.body;
         const already = await model.Coupon.find({ code });
-        if (already.length > 0) {
+        console.log(already.length);
+        if (already.length !== 0) {
             req.flash('message', ['Code already exist']);
-            res.redirect('admin/home/coupon/add');
+            res.redirect('/admin/home/coupon/add');
         } else {
             // eslint-disable-next-line prefer-destructuring
             const Coupon = model.Coupon;
